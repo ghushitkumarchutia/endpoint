@@ -1,5 +1,8 @@
-const BudgetProgress = ({ used, total, label }) => {
-  const percentage = total > 0 ? Math.round((used / total) * 100) : 0;
+const BudgetProgress = ({ used = 0, total = 0, label }) => {
+  const safeUsed = Number(used) || 0;
+  const safeTotal = Number(total) || 0;
+  const percentage =
+    safeTotal > 0 ? Math.round((safeUsed / safeTotal) * 100) : 0;
   const isWarning = percentage > 80;
   const isDanger = percentage > 100;
 
@@ -9,7 +12,7 @@ const BudgetProgress = ({ used, total, label }) => {
         <div className='flex justify-between text-sm'>
           <span className='text-muted-foreground'>{label}</span>
           <span className='font-medium'>
-            ${used.toFixed(2)} / ${total.toFixed(2)}
+            ${safeUsed.toFixed(2)} / ${safeTotal.toFixed(2)}
           </span>
         </div>
       )}

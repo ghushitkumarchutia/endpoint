@@ -1,7 +1,9 @@
 import { TrendingUp, Calendar } from "lucide-react";
 
-const CostProjection = ({ currentCost, projectedCost, trend }) => {
-  const difference = projectedCost - currentCost;
+const CostProjection = ({ currentCost = 0, projectedCost = 0, trend }) => {
+  const safeCurrent = Number(currentCost) || 0;
+  const safeProjected = Number(projectedCost) || 0;
+  const difference = safeProjected - safeCurrent;
   const isIncreasing = difference > 0;
 
   return (
@@ -14,13 +16,13 @@ const CostProjection = ({ currentCost, projectedCost, trend }) => {
       <div className='space-y-4'>
         <div>
           <p className='text-sm text-muted-foreground mb-1'>Current Month</p>
-          <p className='text-2xl font-bold'>${currentCost.toFixed(2)}</p>
+          <p className='text-2xl font-bold'>${safeCurrent.toFixed(2)}</p>
         </div>
 
         <div className='border-t border-border pt-4'>
           <p className='text-sm text-muted-foreground mb-1'>Projected Total</p>
           <div className='flex items-baseline gap-2'>
-            <p className='text-3xl font-bold'>${projectedCost.toFixed(2)}</p>
+            <p className='text-3xl font-bold'>${safeProjected.toFixed(2)}</p>
             <div
               className={`flex items-center gap-1 text-sm ${isIncreasing ? "text-red-500" : "text-green-500"}`}
             >

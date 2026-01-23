@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
-import { Brain, Bell, Lightbulb, Clock } from "lucide-react";
+import { Brain, Bell, Lightbulb, Clock, Link2 } from "lucide-react";
 import useInsights from "../hooks/useInsights";
 import RootCauseCard from "../components/insights/RootCauseCard";
 import PredictiveCard from "../components/insights/PredictiveCard";
 import InsightTimeline from "../components/insights/InsightTimeline";
+import CorrelationList from "../components/insights/CorrelationList";
+import ConfidenceBar from "../components/insights/ConfidenceBar";
 import LoadingSpinner from "../components/common/LoadingSpinner";
 import toast from "react-hot-toast";
 

@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { TrendingDown, Filter, AlertTriangle, Check, X } from "lucide-react";
 import useRegressions from "../hooks/useRegressions";
 import RegressionAlert from "../components/regression/RegressionAlert";
+import RegressionDetail from "../components/regression/RegressionDetail";
+import BaselineCard from "../components/regression/BaselineCard";
 import StatComparison from "../components/regression/StatComparison";
 import RegressionChart from "../components/charts/RegressionChart";
 import LoadingSpinner from "../components/common/LoadingSpinner";
@@ -168,26 +170,10 @@ const Regressions = () => {
           {selectedRegression ? (
             <>
               <h3 className='font-semibold'>Regression Details</h3>
-              <div className='bg-card border border-border rounded-xl p-4 space-y-4'>
-                <div>
-                  <p className='text-sm text-muted-foreground'>API</p>
-                  <p className='font-medium'>{selectedRegression.apiName}</p>
-                </div>
-                <StatComparison
-                  label='Value Change'
-                  baseline={selectedRegression.baselineValue}
-                  current={selectedRegression.currentValue}
-                  unit={selectedRegression.metric === "latency" ? "ms" : "%"}
-                />
-                <div className='pt-4 border-t border-border'>
-                  <p className='text-sm text-muted-foreground mb-2'>
-                    Metric Trend
-                  </p>
-                  <div className='h-40'>
-                    <RegressionChart data={selectedRegression.history || []} />
-                  </div>
-                </div>
-              </div>
+              <RegressionDetail regression={selectedRegression} />
+              {selectedRegression.baseline && (
+                <BaselineCard baseline={selectedRegression.baseline} />
+              )}
             </>
           ) : (
             <div className='bg-card border border-border rounded-xl p-6 text-center'>

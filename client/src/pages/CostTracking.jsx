@@ -4,6 +4,7 @@ import useCosts from "../hooks/useCosts";
 import CostCard from "../components/cost/CostCard";
 import BudgetProgress from "../components/cost/BudgetProgress";
 import CostProjection from "../components/cost/CostProjection";
+import OptimizationTips from "../components/cost/OptimizationTips";
 import CostBreakdownChart from "../components/charts/CostBreakdownChart";
 import LoadingSpinner from "../components/common/LoadingSpinner";
 import toast from "react-hot-toast";
@@ -208,6 +209,8 @@ const CostTracking = () => {
           </div>
         </div>
       )}
+
+      <OptimizationTips tips={dashboard?.optimizationTips} />
     </div>
   );
 };

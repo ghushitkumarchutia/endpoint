@@ -1,9 +1,19 @@
 import { useState, useEffect } from "react";
-import { AlertTriangle, Filter, Check, ChevronDown } from "lucide-react";
+import {
+  AlertTriangle,
+  Filter,
+  Check,
+  ChevronDown,
+  Settings,
+} from "lucide-react";
 import useContracts from "../hooks/useContracts";
 import ViolationList from "../components/contract/ViolationList";
+import ViolationCard from "../components/contract/ViolationCard";
+import ContractViewer from "../components/contract/ContractViewer";
 import SchemaEditor from "../components/contract/SchemaEditor";
+import ContractForm from "../components/forms/ContractForm";
 import LoadingSpinner from "../components/common/LoadingSpinner";
+import Modal from "../components/common/Modal";
 import toast from "react-hot-toast";
 
 const Contracts = () => {

@@ -9,11 +9,17 @@ import {
   ReferenceLine,
 } from "recharts";
 
-const RegressionChart = ({ baseline, data }) => {
+const TrendChart = ({
+  data,
+  dataKey = "value",
+  xKey = "date",
+  threshold,
+  unit = "",
+}) => {
   if (!data || data.length === 0) {
     return (
       <div className='h-64 flex items-center justify-center text-muted-foreground'>
-        No regression data available
+        No trend data available
       </div>
     );
   }
@@ -27,16 +33,16 @@ const RegressionChart = ({ baseline, data }) => {
         >
           <CartesianGrid strokeDasharray='3 3' stroke='var(--border)' />
           <XAxis
-            dataKey='timestamp'
-            tick={{ fontSize: 10, fill: "var(--muted-foreground)" }}
+            dataKey={xKey}
+            tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
             tickLine={false}
             axisLine={false}
           />
           <YAxis
-            tick={{ fontSize: 10, fill: "var(--muted-foreground)" }}
+            tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
             tickLine={false}
             axisLine={false}
-            tickFormatter={(value) => `${value}ms`}
+            tickFormatter={(v) => `${v}${unit}`}
           />
           <Tooltip
             contentStyle={{
@@ -45,22 +51,23 @@ const RegressionChart = ({ baseline, data }) => {
               borderRadius: "8px",
               fontSize: "12px",
             }}
-            formatter={(value) => [`${value}ms`, "Response Time"]}
+            formatter={(value) => [`${value}${unit}`, "Value"]}
           />
-          {baseline && (
+          {threshold && (
             <ReferenceLine
-              y={baseline}
-              stroke='#22c55e'
+              y={threshold}
+              stroke='#ef4444'
               strokeDasharray='5 5'
-              label={{ value: "Baseline", fill: "#22c55e", fontSize: 10 }}
+              label={{ value: "Threshold", fill: "#ef4444", fontSize: 10 }}
             />
           )}
           <Line
             type='monotone'
-            dataKey='responseTime'
+            dataKey={dataKey}
             stroke='var(--primary)'
             strokeWidth={2}
             dot={false}
+            activeDot={{ r: 4 }}
           />
         </LineChart>
       </ResponsiveContainer>
@@ -68,4 +75,4 @@ const RegressionChart = ({ baseline, data }) => {
   );
 };
 
-export default RegressionChart;
+export default TrendChart;

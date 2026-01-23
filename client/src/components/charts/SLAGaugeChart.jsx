@@ -10,7 +10,15 @@ import {
 const COLORS = ["#22c55e", "#ef4444"];
 
 const SLAGaugeChart = ({ compliance }) => {
-  const compliant = compliance?.overall ? 1 : 0;
+  if (!compliance) {
+    return (
+      <div className='h-48 flex items-center justify-center text-muted-foreground'>
+        No SLA data available
+      </div>
+    );
+  }
+
+  const compliant = compliance.overall ? 1 : 0;
   const data = [
     { name: "Compliant", value: compliant },
     { name: "Non-Compliant", value: 1 - compliant },

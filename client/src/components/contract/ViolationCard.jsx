@@ -1,6 +1,6 @@
 import { SEVERITY_COLORS } from "../../utils/constants";
 import { formatDistanceToNow } from "date-fns";
-import { AlertTriangle, Check, X } from "lucide-react";
+import { AlertTriangle, Check } from "lucide-react";
 
 const ViolationCard = ({ violation, onAcknowledge }) => {
   const { _id, apiId, violations, aiExplanation, acknowledged, createdAt } =

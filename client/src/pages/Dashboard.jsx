@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Plus, Activity, Globe, AlertTriangle } from "lucide-react";
+import { Plus, Activity, Globe, AlertTriangle, RefreshCw } from "lucide-react";
 import apiService from "../services/apiService";
+import insightsService from "../services/insightsService";
 import useFetch from "../hooks/useFetch";
 import ApiCard from "../components/dashboard/ApiCard";
 import StatsCard from "../components/dashboard/StatsCard";
+import AlertBanner from "../components/dashboard/AlertBanner";
+import QuickActions from "../components/dashboard/QuickActions";
 import Button from "../components/common/Button";
 import Loader from "../components/common/Loader";
 import AnomalyList from "../components/dashboard/AnomalyList";
@@ -14,22 +17,37 @@ const Dashboard = () => {
   const { request, loading } = useFetch();
   const [stats, setStats] = useState(null);
   const [apis, setApis] = useState([]);
+  const [predictiveAlert, setPredictiveAlert] = useState(null);
+
+  const fetchData = async () => {
+    try {
+      const [statsData, apisData] = await Promise.all([
+        request(apiService.getDashboardStats),
+        request(apiService.getApis),
+      ]);
+      setStats(statsData.data);
+      setApis(apisData.data);
+
+      try {
+        const alertsData = await insightsService.getPredictiveAlerts({
+          status: "active",
+          limit: 1,
+        });
+        if (alertsData.data?.alerts?.length > 0) {
+          setPredictiveAlert(alertsData.data.alerts[0]);
+        }
+      } catch {}
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [statsData, apisData] = await Promise.all([
-          request(apiService.getDashboardStats),
-          request(apiService.getApis),
-        ]);
-        setStats(statsData.data);
-        setApis(apisData.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
     fetchData();
   }, [request]);
+
+  const handleRefresh = () => fetchData();
+  const handleExport = () => window.print();
 
   if (loading && !stats) return <Loader size='lg' />;
 
@@ -42,12 +60,15 @@ const Dashboard = () => {
             Overview of your API ecosystem
           </p>
         </div>
-        <Link to={ROUTES.ADD_API}>
-          <Button>
-            <Plus className='mr-2 h-4 w-4' /> Add Monitor
-          </Button>
-        </Link>
+        <QuickActions onRefresh={handleRefresh} onExport={handleExport} />
       </div>
+
+      {predictiveAlert && (
+        <AlertBanner
+          alert={predictiveAlert}
+          onDismiss={() => setPredictiveAlert(null)}
+        />
+      )}
 
       {stats && (
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'>

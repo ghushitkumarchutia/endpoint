@@ -10,7 +10,9 @@ import { ROUTES } from "../utils/constants";
 
 import Button from "../components/common/Button";
 import Loader from "../components/common/Loader";
+import ConfidenceBadge from "../components/common/ConfidenceBadge";
 import ResponseTimeChart from "../components/charts/ResponseTimeChart";
+import TrendChart from "../components/charts/TrendChart";
 import StatusPieChart from "../components/charts/StatusPieChart";
 import AnomalyList from "../components/dashboard/AnomalyList";
 import Modal from "../components/common/Modal";
