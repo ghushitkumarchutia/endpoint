@@ -13,10 +13,14 @@ const useSLA = () => {
     setError(null);
     try {
       const data = await slaService.getDashboard();
-      setDashboard(data.data);
+      setDashboard(data.data || null);
       return data;
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to fetch SLA dashboard");
+      const msg =
+        err.message ||
+        err.response?.data?.message ||
+        "Failed to fetch SLA dashboard";
+      setError(msg);
       throw err;
     } finally {
       setLoading(false);
@@ -24,14 +28,21 @@ const useSLA = () => {
   }, []);
 
   const generateReport = useCallback(async (apiId, periodType = "daily") => {
+    if (!apiId) {
+      throw new Error("API ID is required");
+    }
     setLoading(true);
     setError(null);
     try {
       const data = await slaService.generateReport(apiId, periodType);
-      setCurrentReport(data.data);
+      setCurrentReport(data.data || null);
       return data;
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to generate report");
+      const msg =
+        err.message ||
+        err.response?.data?.message ||
+        "Failed to generate report";
+      setError(msg);
       throw err;
     } finally {
       setLoading(false);
@@ -39,14 +50,20 @@ const useSLA = () => {
   }, []);
 
   const fetchReports = useCallback(async (apiId, params = {}) => {
+    if (!apiId) {
+      setError("API ID is required");
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
       const data = await slaService.getReports(apiId, params);
-      setReports(data.data.reports || []);
+      setReports(data.data?.reports || []);
       return data;
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to fetch reports");
+      const msg =
+        err.message || err.response?.data?.message || "Failed to fetch reports";
+      setError(msg);
       throw err;
     } finally {
       setLoading(false);
@@ -54,14 +71,20 @@ const useSLA = () => {
   }, []);
 
   const fetchReportById = useCallback(async (reportId) => {
+    if (!reportId) {
+      setError("Report ID is required");
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
       const data = await slaService.getReportById(reportId);
-      setCurrentReport(data.data);
+      setCurrentReport(data.data || null);
       return data;
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to fetch report");
+      const msg =
+        err.message || err.response?.data?.message || "Failed to fetch report";
+      setError(msg);
       throw err;
     } finally {
       setLoading(false);
@@ -69,13 +92,20 @@ const useSLA = () => {
   }, []);
 
   const updateConfig = useCallback(async (apiId, config) => {
+    if (!apiId || !config) {
+      throw new Error("API ID and config are required");
+    }
     setLoading(true);
     setError(null);
     try {
       const data = await slaService.updateConfig(apiId, config);
       return data;
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to update SLA config");
+      const msg =
+        err.message ||
+        err.response?.data?.message ||
+        "Failed to update SLA config";
+      setError(msg);
       throw err;
     } finally {
       setLoading(false);
@@ -89,7 +119,11 @@ const useSLA = () => {
       const data = await slaService.generateAllReports(periodType);
       return data;
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to generate reports");
+      const msg =
+        err.message ||
+        err.response?.data?.message ||
+        "Failed to generate reports";
+      setError(msg);
       throw err;
     } finally {
       setLoading(false);

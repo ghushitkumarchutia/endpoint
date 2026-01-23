@@ -13,10 +13,14 @@ const useCosts = (apiId = null) => {
     setError(null);
     try {
       const data = await costService.getDashboard(params);
-      setDashboard(data.data);
+      setDashboard(data.data || null);
       return data;
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to fetch cost dashboard");
+      const msg =
+        err.message ||
+        err.response?.data?.message ||
+        "Failed to fetch cost dashboard";
+      setError(msg);
       throw err;
     } finally {
       setLoading(false);
@@ -28,10 +32,14 @@ const useCosts = (apiId = null) => {
     setError(null);
     try {
       const data = await costService.getRecords(params);
-      setRecords(data.data.records);
+      setRecords(data.data?.records || []);
       return data;
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to fetch cost records");
+      const msg =
+        err.message ||
+        err.response?.data?.message ||
+        "Failed to fetch cost records";
+      setError(msg);
       throw err;
     } finally {
       setLoading(false);
@@ -39,14 +47,22 @@ const useCosts = (apiId = null) => {
   }, []);
 
   const fetchApiCosts = useCallback(async (id) => {
+    if (!id) {
+      setError("API ID is required");
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
       const data = await costService.getApiCosts(id);
-      setApiCosts(data.data);
+      setApiCosts(data.data || null);
       return data;
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to fetch API costs");
+      const msg =
+        err.message ||
+        err.response?.data?.message ||
+        "Failed to fetch API costs";
+      setError(msg);
       throw err;
     } finally {
       setLoading(false);
@@ -54,13 +70,20 @@ const useCosts = (apiId = null) => {
   }, []);
 
   const updateConfig = useCallback(async (id, config) => {
+    if (!id || !config) {
+      throw new Error("API ID and config are required");
+    }
     setLoading(true);
     setError(null);
     try {
       const data = await costService.updateConfig(id, config);
       return data;
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to update cost config");
+      const msg =
+        err.message ||
+        err.response?.data?.message ||
+        "Failed to update cost config";
+      setError(msg);
       throw err;
     } finally {
       setLoading(false);

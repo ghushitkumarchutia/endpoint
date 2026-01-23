@@ -15,7 +15,11 @@ const useWebhooks = () => {
       setWebhooks(data.data || []);
       return data;
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to fetch webhooks");
+      const msg =
+        err.message ||
+        err.response?.data?.message ||
+        "Failed to fetch webhooks";
+      setError(msg);
       throw err;
     } finally {
       setLoading(false);
@@ -23,14 +27,20 @@ const useWebhooks = () => {
   }, []);
 
   const fetchByUniqueId = useCallback(async (uniqueId) => {
+    if (!uniqueId) {
+      setError("Webhook ID is required");
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
       const data = await webhookService.getByUniqueId(uniqueId);
-      setCurrentWebhook(data.data);
+      setCurrentWebhook(data.data || null);
       return data;
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to fetch webhook");
+      const msg =
+        err.message || err.response?.data?.message || "Failed to fetch webhook";
+      setError(msg);
       throw err;
     } finally {
       setLoading(false);
@@ -38,14 +48,23 @@ const useWebhooks = () => {
   }, []);
 
   const create = useCallback(async (webhookData) => {
+    if (!webhookData || !webhookData.name) {
+      throw new Error("Webhook data with name is required");
+    }
     setLoading(true);
     setError(null);
     try {
       const data = await webhookService.create(webhookData);
-      setWebhooks((prev) => [data.data, ...prev]);
+      if (data.data) {
+        setWebhooks((prev) => [data.data, ...prev]);
+      }
       return data;
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to create webhook");
+      const msg =
+        err.message ||
+        err.response?.data?.message ||
+        "Failed to create webhook";
+      setError(msg);
       throw err;
     } finally {
       setLoading(false);
@@ -54,6 +73,9 @@ const useWebhooks = () => {
 
   const toggle = useCallback(
     async (uniqueId, isActive) => {
+      if (!uniqueId) {
+        throw new Error("Webhook ID is required");
+      }
       setLoading(true);
       setError(null);
       try {
@@ -61,19 +83,23 @@ const useWebhooks = () => {
         setWebhooks((prev) =>
           prev.map((w) =>
             w.uniqueId === uniqueId
-              ? { ...w, isActive: data.data.isActive }
+              ? { ...w, isActive: data.data?.isActive ?? isActive }
               : w,
           ),
         );
         if (currentWebhook?.uniqueId === uniqueId) {
           setCurrentWebhook((prev) => ({
             ...prev,
-            isActive: data.data.isActive,
+            isActive: data.data?.isActive ?? isActive,
           }));
         }
         return data;
       } catch (err) {
-        setError(err.response?.data?.message || "Failed to toggle webhook");
+        const msg =
+          err.message ||
+          err.response?.data?.message ||
+          "Failed to toggle webhook";
+        setError(msg);
         throw err;
       } finally {
         setLoading(false);
@@ -84,6 +110,9 @@ const useWebhooks = () => {
 
   const clearPayloads = useCallback(
     async (uniqueId) => {
+      if (!uniqueId) {
+        throw new Error("Webhook ID is required");
+      }
       setLoading(true);
       setError(null);
       try {
@@ -93,7 +122,11 @@ const useWebhooks = () => {
         }
         return data;
       } catch (err) {
-        setError(err.response?.data?.message || "Failed to clear payloads");
+        const msg =
+          err.message ||
+          err.response?.data?.message ||
+          "Failed to clear payloads";
+        setError(msg);
         throw err;
       } finally {
         setLoading(false);
@@ -103,6 +136,9 @@ const useWebhooks = () => {
   );
 
   const deleteWebhook = useCallback(async (uniqueId) => {
+    if (!uniqueId) {
+      throw new Error("Webhook ID is required");
+    }
     setLoading(true);
     setError(null);
     try {
@@ -110,7 +146,11 @@ const useWebhooks = () => {
       setWebhooks((prev) => prev.filter((w) => w.uniqueId !== uniqueId));
       return data;
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to delete webhook");
+      const msg =
+        err.message ||
+        err.response?.data?.message ||
+        "Failed to delete webhook";
+      setError(msg);
       throw err;
     } finally {
       setLoading(false);

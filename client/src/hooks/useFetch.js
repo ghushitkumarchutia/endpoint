@@ -6,6 +6,9 @@ const useFetch = () => {
   const [error, setError] = useState(null);
 
   const request = useCallback(async (asyncFn, ...args) => {
+    if (typeof asyncFn !== "function") {
+      throw new Error("First argument must be a function");
+    }
     setLoading(true);
     setError(null);
     try {
@@ -13,16 +16,23 @@ const useFetch = () => {
       return data;
     } catch (err) {
       const errorMessage =
-        err.response?.data?.message || err.message || "Something went wrong";
+        err.message || err.response?.data?.message || "Something went wrong";
       setError(errorMessage);
-      toast.error(errorMessage);
+
+      if (errorMessage !== "Request cancelled") {
+        toast.error(errorMessage);
+      }
       throw err;
     } finally {
       setLoading(false);
     }
   }, []);
 
-  return { loading, error, request };
+  const clearError = useCallback(() => {
+    setError(null);
+  }, []);
+
+  return { loading, error, request, clearError };
 };
 
 export default useFetch;

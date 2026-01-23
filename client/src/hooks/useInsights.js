@@ -11,14 +11,22 @@ const useInsights = () => {
   const [error, setError] = useState(null);
 
   const fetchRootCauseByApi = useCallback(async (apiId, limit = 20) => {
+    if (!apiId) {
+      setError("API ID is required");
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
       const data = await insightsService.getRootCauseByApi(apiId, limit);
-      setRootCauses(data.data.analyses || []);
+      setRootCauses(data.data?.analyses || []);
       return data;
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to fetch root causes");
+      const msg =
+        err.message ||
+        err.response?.data?.message ||
+        "Failed to fetch root causes";
+      setError(msg);
       throw err;
     } finally {
       setLoading(false);
@@ -26,14 +34,22 @@ const useInsights = () => {
   }, []);
 
   const fetchRootCauseById = useCallback(async (analysisId) => {
+    if (!analysisId) {
+      setError("Analysis ID is required");
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
       const data = await insightsService.getRootCauseById(analysisId);
-      setCurrentAnalysis(data.data);
+      setCurrentAnalysis(data.data || null);
       return data;
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to fetch analysis");
+      const msg =
+        err.message ||
+        err.response?.data?.message ||
+        "Failed to fetch analysis";
+      setError(msg);
       throw err;
     } finally {
       setLoading(false);
@@ -45,11 +61,13 @@ const useInsights = () => {
     setError(null);
     try {
       const data = await insightsService.getPredictiveAlerts(params);
-      setAlerts(data.data.alerts || []);
-      setSummary(data.data.summary || null);
+      setAlerts(data.data?.alerts || []);
+      setSummary(data.data?.summary || null);
       return data;
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to fetch alerts");
+      const msg =
+        err.message || err.response?.data?.message || "Failed to fetch alerts";
+      setError(msg);
       throw err;
     } finally {
       setLoading(false);
@@ -57,14 +75,20 @@ const useInsights = () => {
   }, []);
 
   const fetchPredictiveAlertById = useCallback(async (alertId) => {
+    if (!alertId) {
+      setError("Alert ID is required");
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
       const data = await insightsService.getPredictiveAlertById(alertId);
-      setCurrentAlert(data.data);
+      setCurrentAlert(data.data || null);
       return data;
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to fetch alert");
+      const msg =
+        err.message || err.response?.data?.message || "Failed to fetch alert";
+      setError(msg);
       throw err;
     } finally {
       setLoading(false);
@@ -73,6 +97,9 @@ const useInsights = () => {
 
   const updateAlertStatus = useCallback(
     async (alertId, status) => {
+      if (!alertId || !status) {
+        throw new Error("Alert ID and status are required");
+      }
       setLoading(true);
       setError(null);
       try {
@@ -85,9 +112,11 @@ const useInsights = () => {
         }
         return data;
       } catch (err) {
-        setError(
-          err.response?.data?.message || "Failed to update alert status",
-        );
+        const msg =
+          err.message ||
+          err.response?.data?.message ||
+          "Failed to update alert status";
+        setError(msg);
         throw err;
       } finally {
         setLoading(false);

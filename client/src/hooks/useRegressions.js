@@ -13,11 +13,15 @@ const useRegressions = () => {
     setError(null);
     try {
       const data = await regressionService.getDashboard(params);
-      setDashboard(data.data);
-      setRegressions(data.data.regressions || []);
+      setDashboard(data.data || null);
+      setRegressions(data.data?.regressions || []);
       return data;
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to fetch regressions");
+      const msg =
+        err.message ||
+        err.response?.data?.message ||
+        "Failed to fetch regressions";
+      setError(msg);
       throw err;
     } finally {
       setLoading(false);
@@ -25,16 +29,22 @@ const useRegressions = () => {
   }, []);
 
   const fetchApiRegressions = useCallback(async (apiId, days = 30) => {
+    if (!apiId) {
+      setError("API ID is required");
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
       const data = await regressionService.getApiRegressions(apiId, days);
-      setRegressions(data.data.regressions || []);
+      setRegressions(data.data?.regressions || []);
       return data;
     } catch (err) {
-      setError(
-        err.response?.data?.message || "Failed to fetch API regressions",
-      );
+      const msg =
+        err.message ||
+        err.response?.data?.message ||
+        "Failed to fetch API regressions";
+      setError(msg);
       throw err;
     } finally {
       setLoading(false);
@@ -42,14 +52,22 @@ const useRegressions = () => {
   }, []);
 
   const fetchById = useCallback(async (regressionId) => {
+    if (!regressionId) {
+      setError("Regression ID is required");
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
       const data = await regressionService.getById(regressionId);
-      setCurrentRegression(data.data);
+      setCurrentRegression(data.data || null);
       return data;
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to fetch regression");
+      const msg =
+        err.message ||
+        err.response?.data?.message ||
+        "Failed to fetch regression";
+      setError(msg);
       throw err;
     } finally {
       setLoading(false);
@@ -58,6 +76,9 @@ const useRegressions = () => {
 
   const updateStatus = useCallback(
     async (regressionId, status) => {
+      if (!regressionId || !status) {
+        throw new Error("Regression ID and status are required");
+      }
       setLoading(true);
       setError(null);
       try {
@@ -70,7 +91,11 @@ const useRegressions = () => {
         }
         return data;
       } catch (err) {
-        setError(err.response?.data?.message || "Failed to update status");
+        const msg =
+          err.message ||
+          err.response?.data?.message ||
+          "Failed to update status";
+        setError(msg);
         throw err;
       } finally {
         setLoading(false);

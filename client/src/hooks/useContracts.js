@@ -13,11 +13,15 @@ const useContracts = () => {
     setError(null);
     try {
       const data = await contractService.getViolations(params);
-      setViolations(data.data.violations);
-      setPagination(data.data.pagination);
+      setViolations(data.data?.violations || []);
+      setPagination(data.data?.pagination || null);
       return data;
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to fetch violations");
+      const msg =
+        err.message ||
+        err.response?.data?.message ||
+        "Failed to fetch violations";
+      setError(msg);
       throw err;
     } finally {
       setLoading(false);
@@ -25,14 +29,22 @@ const useContracts = () => {
   }, []);
 
   const fetchApiViolations = useCallback(async (apiId) => {
+    if (!apiId) {
+      setError("API ID is required");
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
       const data = await contractService.getApiViolations(apiId);
-      setViolations(data.data.violations || []);
+      setViolations(data.data?.violations || []);
       return data;
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to fetch API violations");
+      const msg =
+        err.message ||
+        err.response?.data?.message ||
+        "Failed to fetch API violations";
+      setError(msg);
       throw err;
     } finally {
       setLoading(false);
@@ -40,14 +52,20 @@ const useContracts = () => {
   }, []);
 
   const fetchStats = useCallback(async (apiId, days = 7) => {
+    if (!apiId) {
+      setError("API ID is required");
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
       const data = await contractService.getStats(apiId, days);
-      setStats(data.data.stats);
+      setStats(data.data?.stats || null);
       return data;
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to fetch stats");
+      const msg =
+        err.message || err.response?.data?.message || "Failed to fetch stats";
+      setError(msg);
       throw err;
     } finally {
       setLoading(false);
@@ -55,13 +73,18 @@ const useContracts = () => {
   }, []);
 
   const updateConfig = useCallback(async (apiId, config) => {
+    if (!apiId || !config) {
+      throw new Error("API ID and config are required");
+    }
     setLoading(true);
     setError(null);
     try {
       const data = await contractService.updateConfig(apiId, config);
       return data;
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to update config");
+      const msg =
+        err.message || err.response?.data?.message || "Failed to update config";
+      setError(msg);
       throw err;
     } finally {
       setLoading(false);
@@ -69,6 +92,9 @@ const useContracts = () => {
   }, []);
 
   const acknowledgeViolation = useCallback(async (violationId) => {
+    if (!violationId) {
+      throw new Error("Violation ID is required");
+    }
     setLoading(true);
     setError(null);
     try {
@@ -80,7 +106,9 @@ const useContracts = () => {
       );
       return data;
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to acknowledge");
+      const msg =
+        err.message || err.response?.data?.message || "Failed to acknowledge";
+      setError(msg);
       throw err;
     } finally {
       setLoading(false);

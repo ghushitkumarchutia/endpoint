@@ -20,6 +20,7 @@ const SchemaEditor = ({ schema, onChange, readOnly }) => {
       const parsed = JSON.parse(newValue);
       setError(null);
       onChange && onChange(parsed);
+      // eslint-disable-next-line no-unused-vars
     } catch (err) {
       setError("Invalid JSON format");
     }

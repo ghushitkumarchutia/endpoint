@@ -9,14 +9,19 @@ const useNLQuery = () => {
   const [error, setError] = useState(null);
 
   const executeQuery = useCallback(async (query) => {
+    if (!query || typeof query !== "string" || !query.trim()) {
+      throw new Error("Query is required");
+    }
     setLoading(true);
     setError(null);
     try {
-      const data = await queryService.executeQuery(query);
-      setResult(data.data);
+      const data = await queryService.executeQuery(query.trim());
+      setResult(data.data || null);
       return data;
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to execute query");
+      const msg =
+        err.message || err.response?.data?.message || "Failed to execute query";
+      setError(msg);
       throw err;
     } finally {
       setLoading(false);
@@ -31,7 +36,9 @@ const useNLQuery = () => {
       setHistory(data.data || []);
       return data;
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to fetch history");
+      const msg =
+        err.message || err.response?.data?.message || "Failed to fetch history";
+      setError(msg);
       throw err;
     } finally {
       setLoading(false);
@@ -43,10 +50,14 @@ const useNLQuery = () => {
     setError(null);
     try {
       const data = await queryService.getSuggestions();
-      setSuggestions(data.data.suggestions || []);
+      setSuggestions(data.data?.suggestions || []);
       return data;
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to fetch suggestions");
+      const msg =
+        err.message ||
+        err.response?.data?.message ||
+        "Failed to fetch suggestions";
+      setError(msg);
       throw err;
     } finally {
       setLoading(false);
@@ -54,6 +65,9 @@ const useNLQuery = () => {
   }, []);
 
   const submitFeedback = useCallback(async (queryId, wasHelpful) => {
+    if (!queryId) {
+      throw new Error("Query ID is required");
+    }
     try {
       const data = await queryService.submitFeedback(queryId, wasHelpful);
       setHistory((prev) =>
@@ -61,7 +75,11 @@ const useNLQuery = () => {
       );
       return data;
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to submit feedback");
+      const msg =
+        err.message ||
+        err.response?.data?.message ||
+        "Failed to submit feedback";
+      setError(msg);
       throw err;
     }
   }, []);

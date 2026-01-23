@@ -17,9 +17,11 @@ const useDependencies = () => {
       setGraph(data.data || { nodes: [], edges: [] });
       return data;
     } catch (err) {
-      setError(
-        err.response?.data?.message || "Failed to fetch dependency graph",
-      );
+      const msg =
+        err.message ||
+        err.response?.data?.message ||
+        "Failed to fetch dependency graph";
+      setError(msg);
       throw err;
     } finally {
       setLoading(false);
@@ -31,10 +33,14 @@ const useDependencies = () => {
     setError(null);
     try {
       const data = await dependencyService.detectDependencies();
-      setSuggestions(data.data.suggestions || []);
+      setSuggestions(data.data?.suggestions || []);
       return data;
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to detect dependencies");
+      const msg =
+        err.message ||
+        err.response?.data?.message ||
+        "Failed to detect dependencies";
+      setError(msg);
       throw err;
     } finally {
       setLoading(false);
@@ -42,16 +48,22 @@ const useDependencies = () => {
   }, []);
 
   const fetchApiDependencies = useCallback(async (apiId) => {
+    if (!apiId) {
+      setError("API ID is required");
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
       const data = await dependencyService.getApiDependencies(apiId);
-      setApiDependencies(data.data);
+      setApiDependencies(data.data || null);
       return data;
     } catch (err) {
-      setError(
-        err.response?.data?.message || "Failed to fetch API dependencies",
-      );
+      const msg =
+        err.message ||
+        err.response?.data?.message ||
+        "Failed to fetch API dependencies";
+      setError(msg);
       throw err;
     } finally {
       setLoading(false);
@@ -59,13 +71,20 @@ const useDependencies = () => {
   }, []);
 
   const addDependency = useCallback(async (apiId, dependencyData) => {
+    if (!apiId || !dependencyData) {
+      throw new Error("API ID and dependency data are required");
+    }
     setLoading(true);
     setError(null);
     try {
       const data = await dependencyService.addDependency(apiId, dependencyData);
       return data;
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to add dependency");
+      const msg =
+        err.message ||
+        err.response?.data?.message ||
+        "Failed to add dependency";
+      setError(msg);
       throw err;
     } finally {
       setLoading(false);
@@ -73,6 +92,9 @@ const useDependencies = () => {
   }, []);
 
   const removeDependency = useCallback(async (apiId, dependsOnApiId) => {
+    if (!apiId || !dependsOnApiId) {
+      throw new Error("Both API IDs are required");
+    }
     setLoading(true);
     setError(null);
     try {
@@ -82,7 +104,11 @@ const useDependencies = () => {
       );
       return data;
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to remove dependency");
+      const msg =
+        err.message ||
+        err.response?.data?.message ||
+        "Failed to remove dependency";
+      setError(msg);
       throw err;
     } finally {
       setLoading(false);
@@ -90,16 +116,22 @@ const useDependencies = () => {
   }, []);
 
   const fetchImpactAnalysis = useCallback(async (apiId) => {
+    if (!apiId) {
+      setError("API ID is required");
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
       const data = await dependencyService.getImpactAnalysis(apiId);
-      setImpactAnalysis(data.data);
+      setImpactAnalysis(data.data || null);
       return data;
     } catch (err) {
-      setError(
-        err.response?.data?.message || "Failed to fetch impact analysis",
-      );
+      const msg =
+        err.message ||
+        err.response?.data?.message ||
+        "Failed to fetch impact analysis";
+      setError(msg);
       throw err;
     } finally {
       setLoading(false);
