@@ -24,7 +24,7 @@ const ImpactHighlight = ({ impactData, onNodeClick }) => {
           </p>
 
           <div className='mt-3 space-y-2'>
-            {affectedApis.slice(0, 5).map((api, index) => (
+            {affectedApis.slice(0, 5).map((api) => (
               <div
                 key={api.id}
                 onClick={() => onNodeClick && onNodeClick(api.id)}

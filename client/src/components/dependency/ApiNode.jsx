@@ -18,7 +18,7 @@ const ApiNode = ({ data, selected }) => {
 
   return (
     <div
-      className={`px-4 py-3 bg-card border-2 rounded-lg min-w-[160px] transition-all ${
+      className={`px-4 py-3 bg-card border-2 rounded-lg min-w-40 transition-all ${
         selected ? "border-primary shadow-lg" : "border-border"
       } ${data.highlighted ? "ring-2 ring-amber-500 ring-offset-2" : ""}`}
     >

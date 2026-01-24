@@ -10,7 +10,7 @@ import {
 const StatusPieChart = ({ stats }) => {
   if (!stats) {
     return (
-      <div className='h-62.5 flex items-center justify-center text-muted-foreground bg-muted/20 rounded-xl border border-dashed border-border'>
+      <div className='h-[250px] flex items-center justify-center text-muted-foreground bg-muted/20 rounded-xl border border-dashed border-border'>
         No API data available
       </div>
     );
@@ -24,14 +24,14 @@ const StatusPieChart = ({ stats }) => {
 
   if (data.length === 0) {
     return (
-      <div className='h-62.5 flex items-center justify-center text-muted-foreground bg-muted/20 rounded-xl border border-dashed border-border'>
+      <div className='h-[250px] flex items-center justify-center text-muted-foreground bg-muted/20 rounded-xl border border-dashed border-border'>
         No API data available
       </div>
     );
   }
 
   return (
-    <div className='h-62.5 w-full'>
+    <div className='h-[250px] w-full'>
       <ResponsiveContainer width='100%' height='100%'>
         <PieChart>
           <Pie

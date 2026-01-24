@@ -11,30 +11,30 @@ const webhookService = {
     return response.data;
   },
 
-  getByUniqueId: async (uniqueId) => {
-    const response = await api.get(`/webhooks/${uniqueId}`);
+  getById: async (id) => {
+    const response = await api.get(`/webhooks/${id}`);
     return response.data;
   },
 
-  getPayload: async (uniqueId, index) => {
-    const response = await api.get(`/webhooks/${uniqueId}/payload/${index}`);
+  getPayload: async (id, index) => {
+    const response = await api.get(`/webhooks/${id}/payload/${index}`);
     return response.data;
   },
 
-  toggle: async (uniqueId, isActive) => {
-    const response = await api.patch(`/webhooks/${uniqueId}/toggle`, {
+  toggle: async (id, isActive) => {
+    const response = await api.patch(`/webhooks/${id}/toggle`, {
       isActive,
     });
     return response.data;
   },
 
-  clearPayloads: async (uniqueId) => {
-    const response = await api.delete(`/webhooks/${uniqueId}/payloads`);
+  clearPayloads: async (id) => {
+    const response = await api.delete(`/webhooks/${id}/payloads`);
     return response.data;
   },
 
-  deleteWebhook: async (uniqueId) => {
-    const response = await api.delete(`/webhooks/${uniqueId}`);
+  deleteWebhook: async (id) => {
+    const response = await api.delete(`/webhooks/${id}`);
     return response.data;
   },
 };

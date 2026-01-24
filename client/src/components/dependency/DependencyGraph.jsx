@@ -16,7 +16,7 @@ const EDGE_COLORS = {
 const DependencyGraph = () => {
   const containerRef = useRef(null);
   const [nodes, setNodes] = useState([]);
-  const [edges, setEdges] = useState([]);
+  // Edges derived directly from props/graph
   const [selectedNode, setSelectedNode] = useState(null);
   const [impactData, setImpactData] = useState(null);
   const [filter, setFilter] = useState("");
@@ -28,20 +28,27 @@ const DependencyGraph = () => {
 
   useEffect(() => {
     fetchGraph();
-  }, []);
+  }, [fetchGraph]);
 
+  // Initial layout calculation when graph data arrives
   useEffect(() => {
     if (graph) {
       const layoutNodes = graph.nodes.map((node, index) => ({
         ...node,
         x: (index % 4) * 220 + 100,
         y: Math.floor(index / 4) * 160 + 100,
-        highlighted: impactData?.affectedApis?.some((a) => a.id === node.id),
       }));
       setNodes(layoutNodes);
-      setEdges(graph.edges || []);
     }
-  }, [graph, impactData]);
+  }, [graph]);
+
+  // Derive display state during render to avoid effects
+  const edges = graph?.edges || [];
+
+  const displayNodes = nodes.map((node) => ({
+    ...node,
+    highlighted: impactData?.affectedApis?.some((a) => a.id === node.id),
+  }));
 
   const handleNodeClick = useCallback(
     async (node) => {
@@ -163,7 +170,7 @@ const DependencyGraph = () => {
             left: 0,
           }}
         >
-          {nodes.map((node) => (
+          {displayNodes.map((node) => (
             <div
               key={node.id}
               style={{

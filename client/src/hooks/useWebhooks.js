@@ -26,15 +26,15 @@ const useWebhooks = () => {
     }
   }, []);
 
-  const fetchByUniqueId = useCallback(async (uniqueId) => {
-    if (!uniqueId) {
+  const fetchById = useCallback(async (id) => {
+    if (!id) {
       setError("Webhook ID is required");
       return;
     }
     setLoading(true);
     setError(null);
     try {
-      const data = await webhookService.getByUniqueId(uniqueId);
+      const data = await webhookService.getById(id);
       setCurrentWebhook(data.data || null);
       return data;
     } catch (err) {
@@ -72,22 +72,22 @@ const useWebhooks = () => {
   }, []);
 
   const toggle = useCallback(
-    async (uniqueId, isActive) => {
-      if (!uniqueId) {
+    async (id, isActive) => {
+      if (!id) {
         throw new Error("Webhook ID is required");
       }
       setLoading(true);
       setError(null);
       try {
-        const data = await webhookService.toggle(uniqueId, isActive);
+        const data = await webhookService.toggle(id, isActive);
         setWebhooks((prev) =>
           prev.map((w) =>
-            w.uniqueId === uniqueId
+            w.uniqueId === id
               ? { ...w, isActive: data.data?.isActive ?? isActive }
               : w,
           ),
         );
-        if (currentWebhook?.uniqueId === uniqueId) {
+        if (currentWebhook?.uniqueId === id) {
           setCurrentWebhook((prev) => ({
             ...prev,
             isActive: data.data?.isActive ?? isActive,
@@ -101,6 +101,7 @@ const useWebhooks = () => {
           "Failed to toggle webhook";
         setError(msg);
         throw err;
+        // eslint-disable-next-line
       } finally {
         setLoading(false);
       }
@@ -109,15 +110,15 @@ const useWebhooks = () => {
   );
 
   const clearPayloads = useCallback(
-    async (uniqueId) => {
-      if (!uniqueId) {
+    async (id) => {
+      if (!id) {
         throw new Error("Webhook ID is required");
       }
       setLoading(true);
       setError(null);
       try {
-        const data = await webhookService.clearPayloads(uniqueId);
-        if (currentWebhook?.uniqueId === uniqueId) {
+        const data = await webhookService.clearPayloads(id);
+        if (currentWebhook?.uniqueId === id) {
           setCurrentWebhook((prev) => ({ ...prev, payloads: [] }));
         }
         return data;
@@ -135,15 +136,15 @@ const useWebhooks = () => {
     [currentWebhook],
   );
 
-  const deleteWebhook = useCallback(async (uniqueId) => {
-    if (!uniqueId) {
+  const deleteWebhook = useCallback(async (id) => {
+    if (!id) {
       throw new Error("Webhook ID is required");
     }
     setLoading(true);
     setError(null);
     try {
-      const data = await webhookService.deleteWebhook(uniqueId);
-      setWebhooks((prev) => prev.filter((w) => w.uniqueId !== uniqueId));
+      const data = await webhookService.deleteWebhook(id);
+      setWebhooks((prev) => prev.filter((w) => w.uniqueId !== id));
       return data;
     } catch (err) {
       const msg =
@@ -163,7 +164,7 @@ const useWebhooks = () => {
     loading,
     error,
     fetchAll,
-    fetchByUniqueId,
+    fetchById,
     create,
     toggle,
     clearPayloads,
