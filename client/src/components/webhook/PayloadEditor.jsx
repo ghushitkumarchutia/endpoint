@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Code, Copy, Wand2 } from "lucide-react";
+import { Copy, Wand2 } from "lucide-react";
 import toast from "react-hot-toast";
 
 const PAYLOAD_TEMPLATES = [
@@ -42,6 +42,10 @@ const PAYLOAD_TEMPLATES = [
   },
 ];
 
+const generateRandomId = () =>
+  "api_" + Math.random().toString(36).substring(2, 11);
+const generateTimestamp = () => new Date().toISOString();
+
 const PayloadEditor = ({ value, onChange, readOnly }) => {
   const [error, setError] = useState(null);
 
@@ -58,11 +62,8 @@ const PayloadEditor = ({ value, onChange, readOnly }) => {
   const applyTemplate = (template) => {
     const payload = JSON.parse(
       JSON.stringify(template.payload)
-        .replace("{{timestamp}}", new Date().toISOString())
-        .replace(
-          /{{apiId}}/g,
-          "api_" + Math.random().toString(36).substr(2, 9),
-        ),
+        .replace("{{timestamp}}", generateTimestamp())
+        .replace(/{{apiId}}/g, generateRandomId()),
     );
     onChange(JSON.stringify(payload, null, 2));
     setError(null);

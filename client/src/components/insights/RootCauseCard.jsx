@@ -1,6 +1,5 @@
 import { formatDistanceToNow } from "date-fns";
-import { Brain, AlertTriangle } from "lucide-react";
-import { SEVERITY_COLORS } from "../../utils/constants";
+import { Brain } from "lucide-react";
 
 const RootCauseCard = ({ analysis, onClick }) => {
   const { analyzedAt, context, possibleCauses, aiAnalysis } = analysis;

@@ -1,4 +1,4 @@
-import { CheckCircle, XCircle, Clock } from "lucide-react";
+import { CheckCircle, XCircle } from "lucide-react";
 
 const SLACard = ({ api }) => {
   const { apiName, slaConfig, latestReport } = api;

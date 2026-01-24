@@ -16,7 +16,7 @@ const EDGE_COLORS = {
 const DependencyGraph = () => {
   const containerRef = useRef(null);
   const [nodes, setNodes] = useState([]);
-  // Edges derived directly from props/graph
+  const [prevGraph, setPrevGraph] = useState(null);
   const [selectedNode, setSelectedNode] = useState(null);
   const [impactData, setImpactData] = useState(null);
   const [filter, setFilter] = useState("");
@@ -30,9 +30,11 @@ const DependencyGraph = () => {
     fetchGraph();
   }, [fetchGraph]);
 
-  // Initial layout calculation when graph data arrives
-  useEffect(() => {
-    if (graph) {
+  // Adjust state during rendering to derive nodes from graph
+  // This avoids "setState in effect" errors by updating state immediately during render
+  if (graph !== prevGraph) {
+    setPrevGraph(graph);
+    if (graph && graph.nodes) {
       const layoutNodes = graph.nodes.map((node, index) => ({
         ...node,
         x: (index % 4) * 220 + 100,
@@ -40,9 +42,9 @@ const DependencyGraph = () => {
       }));
       setNodes(layoutNodes);
     }
-  }, [graph]);
+  }
 
-  // Derive display state during render to avoid effects
+  // Derive display state during render (highlighting)
   const edges = graph?.edges || [];
 
   const displayNodes = nodes.map((node) => ({
@@ -105,7 +107,8 @@ const DependencyGraph = () => {
     return node ? { x: node.x, y: node.y } : { x: 0, y: 0 };
   };
 
-  if (loading && !graph) {
+  // Only show loading if we don't have nodes yet
+  if (loading && !nodes.length) {
     return (
       <div className='h-full flex items-center justify-center'>
         <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-primary'></div>

@@ -1,4 +1,4 @@
-import { ArrowUp, ArrowDown, Clock, Percent } from "lucide-react";
+import { ArrowUp, ArrowDown } from "lucide-react";
 import RegressionChart from "../charts/RegressionChart";
 
 const RegressionDetail = ({ regression }) => {
@@ -11,12 +11,9 @@ const RegressionDetail = ({ regression }) => {
   }
 
   const {
-    apiId,
     baselineStats = {},
     currentStats = {},
     regressionDetails = {},
-    detectedAt,
-    status,
     data = [],
   } = regression;
 

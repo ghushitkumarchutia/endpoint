@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Play, Save, Copy, Check, AlertCircle } from "lucide-react";
+import { Play, Copy, Check, AlertCircle } from "lucide-react";
 import toast from "react-hot-toast";
 
 const WebhookTester = ({ webhook, onTest }) => {

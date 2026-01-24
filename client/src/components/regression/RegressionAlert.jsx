@@ -40,13 +40,13 @@ const RegressionAlert = ({ regression, onClick }) => {
         <div className='text-center p-2 bg-muted/50 rounded-lg'>
           <p className='text-xs text-muted-foreground'>Baseline P95</p>
           <p className='text-lg font-bold'>
-            {baselineStats?.p95?.toFixed(0)}ms
+            {baselineStats?.p95ResponseTime?.toFixed(0)}ms
           </p>
         </div>
         <div className='text-center p-2 bg-red-500/10 rounded-lg'>
           <p className='text-xs text-muted-foreground'>Current P95</p>
           <p className='text-lg font-bold text-red-500'>
-            {currentStats?.p95?.toFixed(0)}ms
+            {currentStats?.p95ResponseTime?.toFixed(0)}ms
           </p>
         </div>
       </div>
