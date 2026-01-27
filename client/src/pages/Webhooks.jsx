@@ -12,7 +12,7 @@ import useWebhooks from "../hooks/useWebhooks";
 import WebhookTester from "../components/webhook/WebhookTester";
 import WebhookHistory from "../components/webhook/WebhookHistory";
 import ResponseViewer from "../components/webhook/ResponseViewer";
-import LoadingSpinner from "../components/common/LoadingSpinner";
+import Loader from "../components/common/Loader";
 import toast from "react-hot-toast";
 
 const Webhooks = () => {
@@ -23,24 +23,26 @@ const Webhooks = () => {
 
   const {
     webhooks,
-    payloads,
+    currentWebhook: webhookDetails,
     loading,
     error,
-    fetchWebhooks,
-    fetchPayloads,
-    createWebhook,
-    toggleWebhook,
+    fetchAll,
+    fetchById,
+    create,
+    toggle,
     deleteWebhook,
   } = useWebhooks();
 
   useEffect(() => {
-    fetchWebhooks();
+    fetchAll();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if (selectedWebhook) {
-      fetchPayloads(selectedWebhook.uniqueId);
+      fetchById(selectedWebhook.uniqueId);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedWebhook]);
 
   const handleCreate = async (e) => {
@@ -50,11 +52,11 @@ const Webhooks = () => {
       return;
     }
     try {
-      await createWebhook(newWebhook);
+      await create(newWebhook);
       toast.success("Webhook created");
       setShowCreate(false);
       setNewWebhook({ name: "", events: [] });
-      fetchWebhooks();
+      fetchAll();
     } catch {
       toast.error("Failed to create webhook");
     }
@@ -62,9 +64,9 @@ const Webhooks = () => {
 
   const handleToggle = async (webhook) => {
     try {
-      await toggleWebhook(webhook.uniqueId, !webhook.active);
+      await toggle(webhook.uniqueId, !webhook.active);
       toast.success(webhook.active ? "Webhook disabled" : "Webhook enabled");
-      fetchWebhooks();
+      fetchAll();
     } catch {
       toast.error("Failed to toggle webhook");
     }
@@ -80,7 +82,7 @@ const Webhooks = () => {
       if (selectedWebhook?.uniqueId === uniqueId) {
         setSelectedWebhook(null);
       }
-      fetchWebhooks();
+      fetchAll();
     } catch {
       toast.error("Failed to delete webhook");
     }
@@ -103,7 +105,7 @@ const Webhooks = () => {
   if (loading && !webhooks) {
     return (
       <div className='flex items-center justify-center h-64'>
-        <LoadingSpinner />
+        <Loader size='lg' />
       </div>
     );
   }
@@ -292,7 +294,7 @@ const Webhooks = () => {
             <>
               <WebhookTester
                 webhook={selectedWebhook}
-                onTest={async (uniqueId, payload) => {
+                onTest={async () => {
                   return { success: true, message: "Test payload sent" };
                 }}
               />
@@ -300,7 +302,7 @@ const Webhooks = () => {
               <div className='bg-card border border-border rounded-xl p-4'>
                 <h3 className='font-semibold mb-4'>Recent Payloads</h3>
                 <WebhookHistory
-                  payloads={payloads || []}
+                  payloads={webhookDetails?.payloads || []}
                   onSelect={setSelectedPayload}
                 />
               </div>

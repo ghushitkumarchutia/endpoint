@@ -98,8 +98,8 @@ const DependencyGraph = () => {
   const handleMouseUp = () => setDragging(null);
 
   const filterOptions = Object.values(DEPENDENCY_RELATIONSHIPS).map((rel) => ({
-    value: rel,
-    label: rel.replace(/_/g, " "),
+    value: rel.value || rel,
+    label: rel.label || String(rel).replace(/_/g, " "),
   }));
 
   const getNodePosition = (nodeId) => {

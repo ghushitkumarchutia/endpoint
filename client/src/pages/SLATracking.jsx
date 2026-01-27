@@ -13,9 +13,16 @@ import SLAHistory from "../components/sla/SLAHistory";
 import SLABadge from "../components/sla/SLABadge";
 import SLAGaugeChart from "../components/charts/SLAGaugeChart";
 import SLAForm from "../components/forms/SLAForm";
-import LoadingSpinner from "../components/common/LoadingSpinner";
+import Loader from "../components/common/Loader";
 import toast from "react-hot-toast";
-import { SLA_PERIOD_TYPES } from "../utils/constants";
+
+// Define locally since not in constants.js
+const SLA_PERIOD_TYPES = {
+  DAILY: "daily",
+  WEEKLY: "weekly",
+  MONTHLY: "monthly",
+  QUARTERLY: "quarterly",
+};
 
 const SLATracking = () => {
   const [period, setPeriod] = useState(SLA_PERIOD_TYPES.MONTHLY);
@@ -40,6 +47,7 @@ const SLATracking = () => {
   useEffect(() => {
     fetchDashboard(period);
     fetchReports();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [period]);
 
   useEffect(() => {
@@ -72,7 +80,7 @@ const SLATracking = () => {
   if (loading && !dashboard) {
     return (
       <div className='flex items-center justify-center h-64'>
-        <LoadingSpinner />
+        <Loader size='lg' />
       </div>
     );
   }
@@ -216,7 +224,9 @@ const SLATracking = () => {
         <div className='bg-card border border-border rounded-xl p-4'>
           <h3 className='font-semibold mb-4'>SLA Compliance</h3>
           <div className='h-64 flex items-center justify-center'>
-            <SLAGaugeChart value={dashboard?.compliance || 0} target={100} />
+            <SLAGaugeChart
+              compliance={{ overall: (dashboard?.compliance || 0) >= 100 }}
+            />
           </div>
           <div className='text-center mt-2'>
             <p className='text-sm text-muted-foreground'>

@@ -36,7 +36,9 @@ const Dashboard = () => {
         if (alertsData.data?.alerts?.length > 0) {
           setPredictiveAlert(alertsData.data.alerts[0]);
         }
-      } catch {}
+      } catch {
+        /* Insights may not be available */
+      }
     } catch (error) {
       console.error(error);
     }
@@ -44,7 +46,8 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetchData();
-  }, [request]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleRefresh = () => fetchData();
   const handleExport = () => window.print();

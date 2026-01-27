@@ -34,7 +34,7 @@ const ApiDetails = () => {
         await Promise.all([
           request(apiService.getApi, id),
           request(analyticsService.getSummary, id),
-          request(analyticsService.getResponseTimeHistory, id),
+          request(analyticsService.getResponseTimeHistory, id, 24),
           request(analyticsService.getAnomalies, id, { limit: 10 }),
         ]);
       setApi(apiData.data);
@@ -48,6 +48,7 @@ const ApiDetails = () => {
 
   useEffect(() => {
     fetchAllData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const handleDelete = async () => {

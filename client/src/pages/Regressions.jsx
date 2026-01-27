@@ -6,9 +6,16 @@ import RegressionDetail from "../components/regression/RegressionDetail";
 import BaselineCard from "../components/regression/BaselineCard";
 import StatComparison from "../components/regression/StatComparison";
 import RegressionChart from "../components/charts/RegressionChart";
-import LoadingSpinner from "../components/common/LoadingSpinner";
+import Loader from "../components/common/Loader";
 import toast from "react-hot-toast";
-import { REGRESSION_STATUS } from "../utils/constants";
+
+// Define locally since not in constants.js
+const REGRESSION_STATUS = {
+  ACTIVE: "active",
+  INVESTIGATING: "investigating",
+  RESOLVED: "resolved",
+  FALSE_POSITIVE: "false_positive",
+};
 
 const Regressions = () => {
   const [statusFilter, setStatusFilter] = useState("all");
@@ -20,6 +27,7 @@ const Regressions = () => {
 
   useEffect(() => {
     fetchDashboard();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleStatusUpdate = async (regressionId, newStatus) => {
@@ -41,7 +49,7 @@ const Regressions = () => {
   if (loading && !dashboard) {
     return (
       <div className='flex items-center justify-center h-64'>
-        <LoadingSpinner />
+        <Loader size='lg' />
       </div>
     );
   }

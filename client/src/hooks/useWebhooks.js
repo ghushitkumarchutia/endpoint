@@ -101,7 +101,6 @@ const useWebhooks = () => {
           "Failed to toggle webhook";
         setError(msg);
         throw err;
-        // eslint-disable-next-line
       } finally {
         setLoading(false);
       }

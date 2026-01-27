@@ -1,25 +1,12 @@
 import { useState, useEffect } from "react";
-import {
-  AlertTriangle,
-  Filter,
-  Check,
-  ChevronDown,
-  Settings,
-} from "lucide-react";
+import { AlertTriangle, Filter, Check } from "lucide-react";
 import useContracts from "../hooks/useContracts";
 import ViolationList from "../components/contract/ViolationList";
-import ViolationCard from "../components/contract/ViolationCard";
-import ContractViewer from "../components/contract/ContractViewer";
-import SchemaEditor from "../components/contract/SchemaEditor";
-import ContractForm from "../components/forms/ContractForm";
-import LoadingSpinner from "../components/common/LoadingSpinner";
-import Modal from "../components/common/Modal";
+import Loader from "../components/common/Loader";
 import toast from "react-hot-toast";
 
 const Contracts = () => {
   const [filter, setFilter] = useState("all");
-  const [selectedApi, setSelectedApi] = useState(null);
-  const [showSchema, setShowSchema] = useState(false);
 
   const {
     violations,
@@ -34,6 +21,7 @@ const Contracts = () => {
   useEffect(() => {
     fetchViolations();
     fetchStats();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleAcknowledge = async (violationId) => {
@@ -56,7 +44,7 @@ const Contracts = () => {
   if (loading && !violations) {
     return (
       <div className='flex items-center justify-center h-64'>
-        <LoadingSpinner />
+        <Loader size='lg' />
       </div>
     );
   }
@@ -152,29 +140,15 @@ const Contracts = () => {
           <ViolationList
             violations={filteredViolations || []}
             onAcknowledge={handleAcknowledge}
-            onViewSchema={(apiId) => {
-              setSelectedApi(apiId);
-              setShowSchema(true);
-            }}
           />
         </div>
 
         <div>
-          {showSchema && selectedApi ? (
-            <SchemaEditor
-              apiId={selectedApi}
-              onClose={() => {
-                setShowSchema(false);
-                setSelectedApi(null);
-              }}
-            />
-          ) : (
-            <div className='bg-card border border-border rounded-xl p-6 text-center'>
-              <p className='text-muted-foreground'>
-                Select a violation to view the expected schema
-              </p>
-            </div>
-          )}
+          <div className='bg-card border border-border rounded-xl p-6 text-center'>
+            <p className='text-muted-foreground'>
+              Select a violation to view details
+            </p>
+          </div>
         </div>
       </div>
     </div>

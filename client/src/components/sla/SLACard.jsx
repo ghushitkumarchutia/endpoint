@@ -1,6 +1,7 @@
 import { CheckCircle, XCircle } from "lucide-react";
 
 const SLACard = ({ api }) => {
+  if (!api) return null;
   const { apiName, slaConfig, latestReport } = api;
   const isCompliant = latestReport?.compliance;
   const metrics = latestReport?.metrics || {};

@@ -1,4 +1,5 @@
-const StatsCard = ({ title, value, icon: Icon, description, trend }) => {
+// eslint-disable-next-line no-unused-vars
+const StatsCard = ({ title, value, icon: Icon, description }) => {
   return (
     <div className='bg-card border border-border rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow'>
       <div className='flex items-center justify-between'>

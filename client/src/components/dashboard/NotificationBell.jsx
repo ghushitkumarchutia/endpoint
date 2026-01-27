@@ -24,6 +24,8 @@ const NotificationBell = () => {
     }
   };
 
+  // Initial fetch and periodic polling - setState in effect is intentional for polling pattern
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     fetchNotifications();
     const interval = setInterval(fetchNotifications, 60000); // Poll every minute

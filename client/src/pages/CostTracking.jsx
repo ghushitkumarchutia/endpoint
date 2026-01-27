@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
 import { DollarSign, TrendingUp, AlertCircle, Settings } from "lucide-react";
 import useCosts from "../hooks/useCosts";
-import CostCard from "../components/cost/CostCard";
 import BudgetProgress from "../components/cost/BudgetProgress";
 import CostProjection from "../components/cost/CostProjection";
 import OptimizationTips from "../components/cost/OptimizationTips";
 import CostBreakdownChart from "../components/charts/CostBreakdownChart";
-import LoadingSpinner from "../components/common/LoadingSpinner";
+import Loader from "../components/common/Loader";
 import toast from "react-hot-toast";
 
 const CostTracking = () => {
@@ -19,10 +18,13 @@ const CostTracking = () => {
 
   useEffect(() => {
     fetchDashboard(period);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [period]);
 
+  // Sync config from dashboard when it loads
   useEffect(() => {
     if (dashboard?.config) {
+       
       setConfig(dashboard.config);
     }
   }, [dashboard]);
@@ -41,7 +43,7 @@ const CostTracking = () => {
   if (loading && !dashboard) {
     return (
       <div className='flex items-center justify-center h-64'>
-        <LoadingSpinner />
+        <Loader size='lg' />
       </div>
     );
   }
@@ -133,43 +135,67 @@ const CostTracking = () => {
       )}
 
       <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
-        <CostCard
-          title='Total Cost'
-          value={dashboard?.totalCost || 0}
-          trend={dashboard?.costTrend}
-          icon={DollarSign}
-        />
-        <CostCard
-          title='Projected Cost'
-          value={dashboard?.projectedCost || 0}
-          trend={dashboard?.projectedTrend}
-          icon={TrendingUp}
-          variant='warning'
-        />
-        <CostCard
-          title='Overages'
-          value={dashboard?.overages || 0}
-          icon={AlertCircle}
-          variant={dashboard?.overages > 0 ? "danger" : "default"}
-        />
+        <div className='bg-card border border-border rounded-xl p-4'>
+          <div className='flex items-center gap-3'>
+            <div className='p-2 bg-primary/10 rounded-lg'>
+              <DollarSign className='h-5 w-5 text-primary' />
+            </div>
+            <div>
+              <p className='text-sm text-muted-foreground'>Total Cost</p>
+              <p className='text-2xl font-bold'>
+                ${(dashboard?.totalCost || 0).toFixed(2)}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className='bg-card border border-border rounded-xl p-4'>
+          <div className='flex items-center gap-3'>
+            <div className='p-2 bg-amber-500/10 rounded-lg'>
+              <TrendingUp className='h-5 w-5 text-amber-500' />
+            </div>
+            <div>
+              <p className='text-sm text-muted-foreground'>Projected Cost</p>
+              <p className='text-2xl font-bold'>
+                ${(dashboard?.projectedCost || 0).toFixed(2)}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className='bg-card border border-border rounded-xl p-4'>
+          <div className='flex items-center gap-3'>
+            <div
+              className={`p-2 rounded-lg ${dashboard?.overages > 0 ? "bg-destructive/10" : "bg-muted"}`}
+            >
+              <AlertCircle
+                className={`h-5 w-5 ${dashboard?.overages > 0 ? "text-destructive" : "text-muted-foreground"}`}
+              />
+            </div>
+            <div>
+              <p className='text-sm text-muted-foreground'>Overages</p>
+              <p className='text-2xl font-bold'>
+                ${(dashboard?.overages || 0).toFixed(2)}
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
         <div className='bg-card border border-border rounded-xl p-4'>
           <h3 className='font-semibold mb-4'>Budget Usage</h3>
           <BudgetProgress
-            spent={dashboard?.totalCost || 0}
-            budget={dashboard?.config?.budget || 0}
-            threshold={dashboard?.config?.alertThreshold || 80}
+            used={dashboard?.totalCost || 0}
+            total={dashboard?.config?.budget || 0}
+            label='Monthly Budget'
           />
         </div>
 
         <div className='bg-card border border-border rounded-xl p-4'>
           <h3 className='font-semibold mb-4'>Cost Projection</h3>
           <CostProjection
-            current={dashboard?.totalCost || 0}
-            projected={dashboard?.projectedCost || 0}
-            budget={dashboard?.config?.budget || 0}
+            currentCost={dashboard?.totalCost || 0}
+            projectedCost={dashboard?.projectedCost || 0}
+            trend={dashboard?.costTrend}
           />
         </div>
       </div>

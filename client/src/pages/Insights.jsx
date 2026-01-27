@@ -6,7 +6,7 @@ import PredictiveCard from "../components/insights/PredictiveCard";
 import InsightTimeline from "../components/insights/InsightTimeline";
 import CorrelationList from "../components/insights/CorrelationList";
 import ConfidenceBar from "../components/insights/ConfidenceBar";
-import LoadingSpinner from "../components/common/LoadingSpinner";
+import Loader from "../components/common/Loader";
 import toast from "react-hot-toast";
 
 const Insights = () => {
@@ -25,6 +25,7 @@ const Insights = () => {
   useEffect(() => {
     fetchRootCauses();
     fetchPredictiveAlerts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleAlertStatusUpdate = async (alertId, status) => {
@@ -53,7 +54,7 @@ const Insights = () => {
   if (loading && !rootCauses && !predictiveAlerts) {
     return (
       <div className='flex items-center justify-center h-64'>
-        <LoadingSpinner />
+        <Loader size='lg' />
       </div>
     );
   }

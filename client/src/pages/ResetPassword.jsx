@@ -21,7 +21,7 @@ const ResetPassword = () => {
     setIsLoading(true);
     try {
       await authService.resetPassword({ token, password: data.password });
-      toast.success("Password reset successfully");
+      toast.success("Password reset successful! Please login.");
       navigate(ROUTES.LOGIN);
     } catch (error) {
       console.error(error);
@@ -57,6 +57,12 @@ const ResetPassword = () => {
             Set New Password
           </Button>
         </form>
+
+        <p className='text-center text-sm text-muted-foreground mt-6'>
+          <Link to={ROUTES.LOGIN} className='text-primary hover:underline'>
+            Back to Login
+          </Link>
+        </p>
       </div>
     </div>
   );

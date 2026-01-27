@@ -125,14 +125,23 @@ const useInsights = () => {
     [currentAlert],
   );
 
+  // Stub for fetching all root causes (API only supports per-API fetch)
+  const fetchRootCauses = useCallback(async () => {
+    // No backend endpoint for all root causes, just reset to empty
+    setLoading(false);
+    setRootCauses([]);
+  }, []);
+
   return {
     rootCauses,
     currentAnalysis,
     alerts,
+    predictiveAlerts: alerts, // Alias for Insights.jsx compatibility
     currentAlert,
     summary,
     loading,
     error,
+    fetchRootCauses, // Added for Insights.jsx
     fetchRootCauseByApi,
     fetchRootCauseById,
     fetchPredictiveAlerts,

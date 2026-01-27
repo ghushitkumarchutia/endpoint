@@ -9,13 +9,10 @@ import {
   Eye,
   EyeOff,
 } from "lucide-react";
-import { useAuth } from "../hooks/useAuth";
-import { updateProfile, changePassword } from "../services/authService";
-import {
-  getNotificationSettings,
-  updateNotificationSettings,
-} from "../services/notificationService";
-import LoadingSpinner from "../components/common/LoadingSpinner";
+import useAuth from "../hooks/useAuth";
+import authService from "../services/authService";
+import notificationService from "../services/notificationService";
+import Loader from "../components/common/Loader";
 import toast from "react-hot-toast";
 
 const Settings = () => {
@@ -61,17 +58,19 @@ const Settings = () => {
 
   const fetchNotificationSettings = async () => {
     try {
-      const settings = await getNotificationSettings();
+      const settings = await notificationService.getNotificationSettings();
       if (settings) {
         setNotifications(settings);
       }
-    } catch {}
+    } catch {
+      /* empty */
+    }
   };
 
   const handleProfileSave = async () => {
     setLoading(true);
     try {
-      await updateProfile(profile);
+      await authService.updateProfile(profile);
       toast.success("Profile updated");
       refreshUser && refreshUser();
     } catch (err) {
@@ -92,7 +91,10 @@ const Settings = () => {
     }
     setLoading(true);
     try {
-      await changePassword(passwords.currentPassword, passwords.newPassword);
+      await authService.changePassword(
+        passwords.currentPassword,
+        passwords.newPassword,
+      );
       toast.success("Password changed");
       setPasswords({
         currentPassword: "",
@@ -109,7 +111,7 @@ const Settings = () => {
   const handleNotificationSave = async () => {
     setLoading(true);
     try {
-      await updateNotificationSettings(notifications);
+      await notificationService.updateNotificationSettings(notifications);
       toast.success("Notification settings updated");
     } catch (err) {
       toast.error(err.message || "Failed to update settings");
@@ -204,11 +206,7 @@ const Settings = () => {
                 disabled={loading}
                 className='flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50 transition-colors'
               >
-                {loading ? (
-                  <LoadingSpinner size='sm' />
-                ) : (
-                  <Save className='h-4 w-4' />
-                )}
+                {loading ? <Loader size='sm' /> : <Save className='h-4 w-4' />}
                 Save Changes
               </button>
             </div>
@@ -327,7 +325,7 @@ const Settings = () => {
                 className='flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50 transition-colors'
               >
                 {loading ? (
-                  <LoadingSpinner size='sm' />
+                  <Loader size='sm' />
                 ) : (
                   <Shield className='h-4 w-4' />
                 )}
@@ -403,11 +401,7 @@ const Settings = () => {
                 disabled={loading}
                 className='flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50 transition-colors'
               >
-                {loading ? (
-                  <LoadingSpinner size='sm' />
-                ) : (
-                  <Save className='h-4 w-4' />
-                )}
+                {loading ? <Loader size='sm' /> : <Save className='h-4 w-4' />}
                 Save Preferences
               </button>
             </div>

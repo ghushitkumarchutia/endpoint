@@ -4,10 +4,10 @@ import useDependencies from "../hooks/useDependencies";
 import DependencyGraph from "../components/dependency/DependencyGraph";
 import ImpactHighlight from "../components/dependency/ImpactHighlight";
 import GraphControls from "../components/dependency/GraphControls";
-import LoadingSpinner from "../components/common/LoadingSpinner";
+import Loader from "../components/common/Loader";
 
 const Dependencies = () => {
-  const [selectedApi, setSelectedApi] = useState(null);
+  const [_selectedApi, setSelectedApi] = useState(null);
   const {
     graph,
     impactAnalysis,
@@ -19,6 +19,7 @@ const Dependencies = () => {
 
   useEffect(() => {
     fetchGraph();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleNodeClick = async (apiId) => {
@@ -55,10 +56,10 @@ const Dependencies = () => {
       <div className='flex-1 bg-card border border-border rounded-xl overflow-hidden'>
         {loading ? (
           <div className='h-full flex items-center justify-center'>
-            <LoadingSpinner />
+            <Loader size='lg' />
           </div>
         ) : (
-          <DependencyGraph onNodeClick={handleNodeClick} />
+          <DependencyGraph graph={graph} onNodeClick={handleNodeClick} />
         )}
       </div>
 
