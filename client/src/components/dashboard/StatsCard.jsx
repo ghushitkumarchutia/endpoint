@@ -1,18 +1,20 @@
 // eslint-disable-next-line no-unused-vars
 const StatsCard = ({ title, value, icon: Icon, description }) => {
   return (
-    <div className='bg-card border border-border rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow'>
+    <div className='bg-[#2C2C2C]/80 h-[190px] px-[30px] py-7 rounded-[32px] border border-[#363636]'>
       <div className='flex items-center justify-between'>
         <div>
-          <p className='text-sm font-medium text-muted-foreground'>{title}</p>
-          <h3 className='text-2xl font-bold mt-2 text-foreground'>{value}</h3>
+          <p className='text-[24px] font-anton tracking-wider uppercase text-white'>
+            {title}
+          </p>
+          <h3 className='text-[44px] font-bold text-white'>{value}</h3>
         </div>
-        <div className='h-10 w-10 bg-primary/10 rounded-full flex items-center justify-center text-primary'>
-          <Icon className='h-5 w-5' />
+        <div className='rounded-full mb-[66px] ml-2 text-white'>
+          <Icon className='h-7 w-7' />
         </div>
       </div>
       {description && (
-        <p className='text-xs text-muted-foreground mt-2'>{description}</p>
+        <p className='text-[18px] text-white font-dmsans'>{description}</p>
       )}
     </div>
   );

@@ -47,19 +47,25 @@ const AppLayout = ({ children }) => {
   // Show sidebar only for authenticated users on protected routes
   const showSidebar = isAuthenticated && !isPublicRoute;
 
+  // Show footer only on landing page
+  const showFooter = location.pathname === "/";
+
   return (
-    <div className='flex-1 flex'>
-      {showSidebar && <Sidebar />}
-      <div className={`flex-1 ${showSidebar ? "p-6 overflow-auto" : ""}`}>
-        {children}
+    <>
+      <div className='flex-1 flex'>
+        {showSidebar && <Sidebar />}
+        <div className={`flex-1 ${showSidebar ? " overflow-auto" : ""}`}>
+          {children}
+        </div>
       </div>
-    </div>
+      {showFooter && <Footer />}
+    </>
   );
 };
 
 function AppContent() {
   return (
-    <div className='min-h-screen flex flex-col bg-background text-foreground font-sans antialiased'>
+    <div className='min-h-screen flex flex-col bg-black text-white font-sans antialiased'>
       <Navbar />
       <AppLayout>
         <Routes>
@@ -181,7 +187,6 @@ function AppContent() {
           <Route path='*' element={<NotFound />} />
         </Routes>
       </AppLayout>
-      <Footer />
       <Toaster
         position='bottom-right'
         toastOptions={{

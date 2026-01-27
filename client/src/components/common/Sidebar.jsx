@@ -32,8 +32,8 @@ const Sidebar = () => {
   const location = useLocation();
 
   return (
-    <aside className='w-64 bg-card border-r border-border flex-shrink-0 hidden md:block'>
-      <nav className='p-4 space-y-1'>
+    <aside className='w-52 bg-black border-r border-neutral-800 flex-shrink-0 hidden md:block'>
+      <nav className='p-3 space-y-1'>
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = location.pathname === item.path;
@@ -41,10 +41,10 @@ const Sidebar = () => {
             <Link
               key={item.path}
               to={item.path}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
+              className={`flex items-center gap-3 px-4 py-[14px] rounded-[14px] text-md transition-colors ${
                 isActive
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  ? "bg-neutral-800 text-white"
+                  : "text-neutral-400 hover:bg-neutral-900 hover:text-white"
               }`}
             >
               <Icon className='h-4 w-4' />

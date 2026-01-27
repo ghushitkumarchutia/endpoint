@@ -47,12 +47,31 @@ export const AuthProvider = ({ children }) => {
           throw new Error("Invalid user data received");
         }
       } catch (error) {
+        // Only log non-cancelled errors
         if (error.message !== "Request cancelled") {
           console.error("Auth check failed:", error.message);
         }
-        localStorage.removeItem("token");
-        safeSetState(setUser, null);
-        safeSetState(setIsAuthenticated, false);
+
+        // Check if this is an auth error (401) vs network error
+        const is401Error =
+          error.message?.includes("Session expired") ||
+          error.message?.includes("401") ||
+          error.response?.status === 401;
+
+        if (is401Error) {
+          // Token is invalid - remove it and require login
+          localStorage.removeItem("token");
+          safeSetState(setUser, null);
+          safeSetState(setIsAuthenticated, false);
+        } else {
+          // Network error or backend down - keep user authenticated with cached token
+          // This allows offline/disconnected usage
+          safeSetState(setIsAuthenticated, true);
+          safeSetState(
+            setAuthError,
+            "Unable to verify session. Working offline.",
+          );
+        }
       } finally {
         safeSetState(setLoading, false);
       }

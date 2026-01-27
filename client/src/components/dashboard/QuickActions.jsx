@@ -17,15 +17,15 @@ const QuickActions = ({ onRefresh, onExport }) => {
   ];
 
   return (
-    <div className='flex flex-wrap gap-2'>
+    <div className='flex flex-wrap gap-3'>
       {actions.map((action) => (
         <button
           key={action.label}
           onClick={action.onClick}
-          className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+          className={`inline-flex items-center cursor-pointer gap-[6px] px-5 py-3 rounded-full text-[16px] font-medium text-white hover:bg-white/20 hover:text-white transition-colors bg-[#2C2C2C]/90 border border-[#363636]/90 font-bricolage ${
             action.primary
               ? "bg-primary text-primary-foreground hover:bg-primary/90"
-              : "bg-muted hover:bg-muted/80"
+              : "bg-[#2C2C2C]/80 hover:bg-[#2C2C2C]/80"
           }`}
         >
           <action.icon className='h-4 w-4' />
