@@ -7,26 +7,49 @@ const StatsCard = forwardRef(
       value,
       icon: Icon,
       description,
+      trend,
+      trendUp,
       className = "",
+      iconClassName = "",
       titleClassName = "",
       valueClassName = "",
       descriptionClassName = "",
-      contentClassName = "",
       ...props
     },
     ref,
   ) => {
     return (
-      <div ref={ref} className={className} {...props}>
-        <div className={contentClassName}>
-          <div className='flex justify-between'>
-            {title && <p className={titleClassName}>{title}</p>}
-            {Icon && <Icon aria-hidden='true' />}
-          </div>
+      <div
+        ref={ref}
+        className={`flex flex-col justify-between ${className}`}
+        {...props}
+      >
+        <div className='flex items-start justify-between'>
+          <p className={titleClassName}>{title}</p>
+          {Icon && (
+            <div className={iconClassName}>
+              <Icon className='h-5 w-5' aria-hidden='true' />
+            </div>
+          )}
+        </div>
 
-          {value && <p className={valueClassName}>{value}</p>}
+        <div className='mt-auto'>
+          <p className={valueClassName}>{value}</p>
 
-          {description && <p className={descriptionClassName}>{description}</p>}
+          {(description || trend) && (
+            <div className='flex items-center gap-2 mt-1'>
+              {trend && (
+                <span
+                  className={`text-xs font-medium ${trendUp ? "text-emerald-600" : "text-red-500"}`}
+                >
+                  {trendUp ? "↑" : "↓"} {trend}
+                </span>
+              )}
+              {description && (
+                <p className={descriptionClassName}>{description}</p>
+              )}
+            </div>
+          )}
         </div>
       </div>
     );

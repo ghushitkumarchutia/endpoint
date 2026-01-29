@@ -7,6 +7,7 @@ export const ROUTES = {
   FORGOT_PASSWORD: "/forgot-password",
   RESET_PASSWORD: "/reset-password/:token",
   DASHBOARD: "/dashboard",
+  MONITORS: "/monitors",
   NOTIFICATIONS: "/notifications",
   PLAYGROUND: "/playground",
   ADD_API: "/add-api",

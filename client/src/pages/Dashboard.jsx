@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Activity, Globe, AlertTriangle } from "lucide-react";
+import { Monitor, CheckCircle, AlertCircle, Bell } from "lucide-react";
 import apiService from "../services/apiService";
 import insightsService from "../services/insightsService";
 import notificationService from "../services/notificationService";
@@ -104,46 +104,49 @@ const Dashboard = () => {
             <StatsCard
               title='Total Monitors'
               value={stats.totalApis}
-              icon={Activity}
-              className='px-8 py-9 rounded-3xl bg-gradient-to-br from-[#14412B] to-[#208052] text-white'
+              icon={Monitor}
+              description='Active endpoints'
+              className='px-6 py-6 rounded-3xl bg-gradient-to-br from-[#14412B] to-[#208052] text-white h-full'
+              iconClassName='p-2 bg-white/20 rounded-xl'
               titleClassName='text-sm font-medium text-emerald-100'
-              valueClassName='text-5xl font-bold text-white'
-              descriptionClassName='text-emerald-200'
-              contentClassName='flex flex-col gap-2'
+              valueClassName='text-4xl font-bold text-white'
+              descriptionClassName='text-xs text-emerald-200'
             />
 
             <StatsCard
               title='Healthy APIs'
               value={stats.healthyCount}
-              icon={Globe}
+              icon={CheckCircle}
               description='Operating normally'
-              className='px-8 py-9 rounded-3xl bg-[#FFF]'
+              className='px-6 py-6 rounded-3xl bg-white h-full shadow-sm'
+              iconClassName='p-2 bg-emerald-50 rounded-xl text-emerald-600'
               titleClassName='text-sm font-medium text-gray-500'
-              valueClassName='text-5xl font-bold text-gray-900'
-              descriptionClassName='text-sm text-emerald-600'
-              contentClassName='flex flex-col gap-2'
+              valueClassName='text-4xl font-bold text-gray-900'
+              descriptionClassName='text-xs text-emerald-600'
             />
 
             <StatsCard
               title='Issues'
               value={stats.warningCount + stats.downCount}
-              icon={AlertTriangle}
+              icon={AlertCircle}
               description='Warnings or downtime'
-              className='px-8 py-9 rounded-3xl bg-[#FFF]'
+              className='px-6 py-6 rounded-3xl bg-white h-full shadow-sm'
+              iconClassName='p-2 bg-red-50 rounded-xl text-red-500'
               titleClassName='text-sm font-medium text-gray-500'
-              valueClassName='text-5xl font-bold text-red-600'
-              descriptionClassName='text-sm text-red-500'
-              contentClassName='flex flex-col gap-2'
+              valueClassName='text-4xl font-bold text-red-600'
+              descriptionClassName='text-xs text-red-500'
             />
 
             <StatsCard
-              title='Total Anomalies'
+              title='Anomalies'
               value={stats.unacknowledgedAnomalies}
-              icon={AlertTriangle}
-              className='px-8 py-9 rounded-3xl bg-[#FFF]'
+              icon={Bell}
+              description='Unacknowledged'
+              className='px-6 py-6 rounded-3xl bg-white h-full shadow-sm'
+              iconClassName='p-2 bg-amber-50 rounded-xl text-amber-600'
               titleClassName='text-sm font-medium text-gray-500'
-              valueClassName='text-5xl font-bold text-amber-600'
-              contentClassName='flex flex-col gap-2'
+              valueClassName='text-4xl font-bold text-amber-600'
+              descriptionClassName='text-xs text-amber-500'
             />
           </div>
         )}
@@ -155,41 +158,59 @@ const Dashboard = () => {
         )}
       </div>
 
-      <div className='grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6 flex-1'>
-        <div className='lg:col-span-2 flex flex-col space-y-4'>
-          <h2 className='text-xl font-anton tracking-wider uppercase text-gray-800'>
+      <div className='grid grid-cols-1 lg:grid-cols-3 gap-5 mt-5 flex-1'>
+        <div className='lg:col-span-2 flex flex-col'>
+          <h2 className='text-sm font-semibold tracking-wide text-gray-600 mb-3'>
             Monitored APIs
           </h2>
-          <div className='grid grid-cols-1 md:grid-cols-2 gap-4 flex-1'>
+          <div className='bg-white rounded-3xl p-5 shadow-sm flex-1 flex flex-col'>
             {apis.length === 0 ? (
-              <div className='col-span-2 flex flex-col items-center justify-center min-h-50 border border-gray-300 rounded-[28px] bg-white/50'>
-                <p className='text-gray-500 mb-4'>No APIs monitored yet</p>
+              <div className='h-full flex flex-col items-center justify-center min-h-80'>
+                <p className='text-gray-400 mb-4 text-sm'>
+                  No APIs monitored yet
+                </p>
                 <Link to={ROUTES.ADD_API}>
-                  <Button className='rounded-full bg-gray-800 hover:bg-gray-700 text-white font-bricolage px-8 py-3'>
+                  <Button className='rounded-full bg-[#14412B] hover:bg-[#1a5438] text-white font-bricolage px-6 py-2.5 text-sm cursor-pointer'>
                     Create your first monitor
                   </Button>
                 </Link>
               </div>
             ) : (
-              apis.map((api) => <ApiCard key={api._id} api={api} />)
+              <>
+                <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                  {apis.slice(0, 2).map((api) => (
+                    <ApiCard key={api._id} api={api} />
+                  ))}
+                </div>
+                {apis.length > 2 && (
+                  <div className='mt-3 text-center border-t border-gray-100 pt-3'>
+                    <Link
+                      to={ROUTES.MONITORS}
+                      className='text-xs font-medium text-gray-500 hover:text-[#14412B] transition-colors'
+                    >
+                      View all ({apis.length}) →
+                    </Link>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>
 
-        <div className='flex flex-col space-y-4'>
-          <h2 className='text-xl font-anton tracking-wider uppercase text-gray-800'>
+        <div className='flex flex-col'>
+          <h2 className='text-sm font-semibold tracking-wide text-gray-600 mb-3'>
             Recent Anomalies
           </h2>
-          <div className='bg-white/50 border border-gray-300 rounded-[28px] p-5 flex-1 flex flex-col min-h-50'>
+          <div className='bg-white rounded-3xl p-5 shadow-sm flex-1 flex flex-col min-h-80'>
             <div className='flex-1 flex items-center justify-center'>
               <AnomalyList anomalies={recentAnomalies} />
             </div>
-            <div className='mt-4 text-center'>
+            <div className='mt-3 text-center border-t border-gray-100 pt-3'>
               <Link
                 to={ROUTES.NOTIFICATIONS}
-                className='text-sm text-gray-500 hover:text-gray-800 transition-colors'
+                className='text-xs text-gray-500 hover:text-[#14412B] transition-colors'
               >
-                View all notifications
+                View all notifications →
               </Link>
             </div>
           </div>

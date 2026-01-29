@@ -31,8 +31,8 @@ const ApiForm = ({ initialData, onSubmit, isLoading }) => {
   }, [initialData, setValue]);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
-      <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+    <form onSubmit={handleSubmit(onSubmit)} className='space-y-5'>
+      <div className='grid grid-cols-1 md:grid-cols-2 gap-5'>
         <Input
           label='API Name'
           placeholder='e.g. Stripe Payment API'
@@ -41,11 +41,11 @@ const ApiForm = ({ initialData, onSubmit, isLoading }) => {
         />
 
         <div className='space-y-1.5'>
-          <label className='block text-sm font-medium text-foreground'>
+          <label className='block text-sm font-medium text-gray-700'>
             HTTP Method
           </label>
           <select
-            className='flex h-10 w-full border border-[#363636] bg-[#151515] rounded-xl py-5.5 px-4 text-sm text-white focus-visible:outline-none focus-visible:ring-0'
+            className='flex h-10 w-full border border-gray-300 bg-white rounded-xl py-2 px-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#14412B]/20 focus:border-[#14412B]'
             {...register("method")}
           >
             {API_METHODS.map((method) => (
@@ -72,11 +72,11 @@ const ApiForm = ({ initialData, onSubmit, isLoading }) => {
         </div>
 
         <div className='space-y-1.5'>
-          <label className='block text-sm font-medium text-foreground'>
+          <label className='block text-sm font-medium text-gray-700'>
             Check Frequency
           </label>
           <select
-            className='flex h-10 w-full border border-[#363636] bg-[#151515] rounded-xl py-5.5 px-4 text-sm text-white focus-visible:outline-none focus-visible:ring-0'
+            className='flex h-10 w-full border border-gray-300 bg-white rounded-xl py-2 px-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#14412B]/20 focus:border-[#14412B]'
             {...register("checkFrequency")}
           >
             {CHECK_FREQUENCIES.map((freq) => (
@@ -99,30 +99,30 @@ const ApiForm = ({ initialData, onSubmit, isLoading }) => {
         />
 
         <div className='md:col-span-2'>
-          <label className='block text-sm font-medium text-foreground mb-1.5'>
+          <label className='block text-sm font-medium text-gray-700 mb-1.5'>
             Description (Optional)
           </label>
           <textarea
-            className='flex min-h-20 w-full border border-[#363636] bg-[#151515] rounded-xl py-3 px-4 text-sm text-white focus-visible:outline-none focus-visible:ring-0'
+            className='flex min-h-20 w-full border border-gray-300 bg-white rounded-xl py-3 px-4 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#14412B]/20 focus:border-[#14412B] resize-none'
             placeholder="Brief description of this API's purpose..."
             {...register("description")}
           />
         </div>
       </div>
 
-      <div className='flex justify-end gap-3'>
+      <div className='flex justify-end gap-3 pt-4 border-t border-gray-100'>
         <Button
           type='button'
           variant='ghost'
           onClick={() => window.history.back()}
-          className='bg-white text-black text-md px-7 py-2 rounded-xl cursor-pointer hover:scale-102 transition-transform'
+          className='bg-white text-gray-700 border border-gray-300 px-6 py-2 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors'
         >
           Cancel
         </Button>
         <Button
           type='submit'
           isLoading={isLoading}
-          className='bg-white text-black text-md px-7 py-2 rounded-xl cursor-pointer hover:scale-102 transition-transform'
+          className='bg-[#14412B] text-white px-6 py-2 rounded-xl cursor-pointer hover:bg-[#1a5438] transition-colors'
         >
           {initialData ? "Update API" : "Create"}
         </Button>

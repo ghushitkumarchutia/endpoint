@@ -17,6 +17,7 @@ import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import Dashboard from "./pages/Dashboard";
+import Monitors from "./pages/Monitors";
 import ApiDetails from "./pages/ApiDetails";
 import AddApi from "./pages/AddApi";
 import Notifications from "./pages/Notifications";
@@ -83,6 +84,14 @@ function AppContent() {
             element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/monitors'
+            element={
+              <ProtectedRoute>
+                <Monitors />
               </ProtectedRoute>
             }
           />

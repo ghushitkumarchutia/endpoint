@@ -5,15 +5,15 @@ const Input = forwardRef(
     return (
       <div className='w-full'>
         {label && (
-          <label className='block text-sm font-medium text-foreground mb-1.5'>
+          <label className='block text-sm font-medium text-gray-700 mb-1.5'>
             {label}
           </label>
         )}
         <input
           ref={ref}
           type={type}
-          className={`flex h-10 w-full border border-[#363636] bg-[#151515] rounded-xl py-5.5 px-4 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 ${
-            error ? "border-red-500 focus-visible:ring-red-500" : ""
+          className={`flex h-10 w-full border border-gray-300 bg-white rounded-xl py-2 px-4 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#14412B]/20 focus:border-[#14412B] disabled:cursor-not-allowed disabled:opacity-50 ${
+            error ? "border-red-500 focus:ring-red-500/20" : ""
           } ${className}`}
           {...props}
         />
