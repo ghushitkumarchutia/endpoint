@@ -1,13 +1,13 @@
 import { Link, useLocation } from "react-router-dom";
-import { LogOut, Bell } from "lucide-react";
+import { Bell, Menu } from "lucide-react";
 import useAuth from "../../hooks/useAuth";
 import { APP_NAME, ROUTES } from "../../utils/constants";
 import { useState } from "react";
 
-const Navbar = () => {
-  const { user, logout, isAuthenticated } = useAuth();
+const Navbar = ({ onMenuClick }) => {
+  const { user, isAuthenticated } = useAuth();
   const location = useLocation();
-  const [hasNotifications] = useState(true); // TODO: connect to real notifications
+  const [hasNotifications] = useState(true);
 
   const isAuthPage = [
     ROUTES.LOGIN,
@@ -21,65 +21,53 @@ const Navbar = () => {
   const userInitial = user?.name?.charAt(0)?.toUpperCase() || "U";
 
   return (
-    <nav className='sticky top-0 z-40 w-full  bg-white'>
+    <nav className='sticky top-0 mt-4 mx-4 rounded-3xl z-30 w-[calc(100%-2rem)] bg-[#f5f5f6]'>
       <div className='w-full px-6 h-[68px] flex items-center justify-between'>
-        {/* Logo - left end */}
-        <Link
-          to={isAuthenticated ? ROUTES.DASHBOARD : ROUTES.HOME}
-          className='flex items-center gap-2.5'
-        >
-          <div className='h-7 w-7 bg-white rounded flex items-center justify-center'>
-            <span className='text-black font-bold text-sm'>E</span>
-          </div>
-          <span className='font-semibold text-base text-black'>{APP_NAME}</span>
-        </Link>
+        {/* Left Side: Mobile Menu Button Only (No Search, No Logo) */}
+        <div className='flex items-center gap-4'>
+          <button
+            onClick={onMenuClick}
+            className='md:hidden p-2 text-gray-500 hover:bg-white rounded-lg transition-colors'
+          >
+            <Menu className='h-6 w-6' />
+          </button>
+        </div>
 
-        {/* Right side - notification + profile + logout */}
-        {isAuthenticated && (
-          <div className='flex items-center gap-2'>
+        {/* Right side - notification + profile */}
+        {isAuthenticated ? (
+          <div className='flex items-center gap-4'>
             {/* Notification Bell */}
             <Link
               to={ROUTES.NOTIFICATIONS}
-              className='relative p-2 rounded-full bg-neutral-800 hover:bg-neutral-700 transition-colors'
+              className='relative p-2.5 rounded-full bg-[#FFF] hover:bg-gray-50 transition-colors'
             >
-              <Bell className='h-4 w-4 text-white' />
+              <Bell className='h-5 w-5 text-gray-500' />
               {hasNotifications && (
-                <span className='absolute -top-0.5 -right-0.5 h-4 w-4 bg-red-500 rounded-full flex items-center justify-center'>
-                  <span className='text-[10px] font-medium text-white'>3</span>
-                </span>
+                <span className='absolute top-2 right-2.5 h-2 w-2 bg-red-500 rounded-full border border-white'></span>
               )}
             </Link>
 
-            {/* Profile Avatar */}
-            <div className='h-8 w-8 bg-neutral-800 rounded-full flex items-center justify-center border border-neutral-700'>
-              <span className='text-white font-medium text-sm'>
-                {userInitial}
-              </span>
+            {/* Profile User */}
+            <div className='flex items-center gap-3 pl-2'>
+              <div className='h-10 w-10 bg-[#14412B] rounded-full flex items-center justify-center border-2 border-white overflow-hidden shadow-sm'>
+                <span className='text-white font-bold text-sm'>
+                  {userInitial}
+                </span>
+              </div>
             </div>
-
-            {/* Logout Button */}
-            <button
-              onClick={logout}
-              className='p-2 rounded-full bg-neutral-800 hover:bg-neutral-700 transition-colors'
-              title='Logout'
-            >
-              <LogOut className='h-4 w-4 text-white' />
-            </button>
           </div>
-        )}
-
-        {/* Not authenticated - show login/register */}
-        {!isAuthenticated && (
+        ) : (
+          /* Not authenticated - show login/register */
           <div className='flex items-center gap-3'>
             <Link
               to={ROUTES.LOGIN}
-              className='px-4 py-2 text-sm text-white hover:text-neutral-300 transition-colors'
+              className='px-4 py-2 text-sm text-gray-600 hover:text-gray-900 transition-colors'
             >
               Login
             </Link>
             <Link
               to={ROUTES.REGISTER}
-              className='px-4 py-2 text-sm bg-white text-black rounded-lg font-medium hover:bg-neutral-200 transition-colors'
+              className='px-4 py-2 text-sm bg-[#14412B] text-white rounded-lg font-medium hover:bg-[#1a5438] transition-colors shadow-sm'
             >
               Get Started
             </Link>

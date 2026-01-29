@@ -5,11 +5,13 @@ import {
   useLocation,
 } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
+import { useState } from "react";
 import { AuthProvider } from "./context/AuthContext";
 import Navbar from "./components/common/Navbar";
 import Footer from "./components/common/Footer";
 import Sidebar from "./components/common/Sidebar";
 import ProtectedRoute from "./components/common/ProtectedRoute";
+import useAuth from "./hooks/useAuth";
 
 import LandingPage from "./pages/LandingPage";
 import Login from "./pages/Login";
@@ -32,12 +34,12 @@ import QueryInterface from "./pages/QueryInterface";
 import Dependencies from "./pages/Dependencies";
 import Webhooks from "./pages/Webhooks";
 import Settings from "./pages/Settings";
-import useAuth from "./hooks/useAuth";
 
-// Layout wrapper that conditionally shows sidebar
+// Robust Layout to handle Fixed Sidebar + Content
 const AppLayout = ({ children }) => {
   const location = useLocation();
   const { isAuthenticated } = useAuth();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // Public routes (no sidebar)
   const publicRoutes = ["/", "/login", "/register", "/forgot-password"];
@@ -53,10 +55,28 @@ const AppLayout = ({ children }) => {
 
   return (
     <>
-      <div className='flex-1 flex'>
-        {showSidebar && <Sidebar />}
-        <div className={`flex-1 ${showSidebar ? " overflow-auto" : ""}`}>
-          {children}
+      <div className='min-h-screen bg-white'>
+        {showSidebar && (
+          <Sidebar
+            isOpen={isSidebarOpen}
+            onClose={() => setIsSidebarOpen(false)}
+          />
+        )}
+
+        {/* 
+           Content Wrapper 
+           - Uses 'md:pl-64' padding-left instead of margin to prevent layout collapsing/overflow issues. 
+           - Padding ensures the content starts exactly after the 64width sidebar.
+           - Transition for smooth sidebar feeling if needed.
+        */}
+        <div
+          className={`transition-all duration-300 min-h-screen flex flex-col ${showSidebar ? "md:pl-64" : ""}`}
+        >
+          {/* Navbar stuck nicely inside the content area */}
+          {showSidebar && <Navbar onMenuClick={() => setIsSidebarOpen(true)} />}
+
+          {/* Main Scrollable Content */}
+          <main className='flex-1 overflow-x-hidden'>{children}</main>
         </div>
       </div>
       {showFooter && <Footer />}
@@ -65,9 +85,17 @@ const AppLayout = ({ children }) => {
 };
 
 function AppContent() {
+  const { isAuthenticated } = useAuth();
+
   return (
-    <div className='min-h-screen flex flex-col bg-white text-black font-sans antialiased'>
-      <Navbar />
+    <div className='min-h-screen flex flex-col font-sans antialiased'>
+      {/* Public Navbar Handling */}
+      {!isAuthenticated && (
+        <div className='sticky top-0 z-50 bg-white border-b border-gray-100'>
+          <Navbar />
+        </div>
+      )}
+
       <AppLayout>
         <Routes>
           {/* Public Routes */}

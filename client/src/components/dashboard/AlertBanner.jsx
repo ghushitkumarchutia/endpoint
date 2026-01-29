@@ -12,17 +12,15 @@ const AlertBanner = ({ alert, onDismiss }) => {
   };
 
   return (
-    <div className='bg-red-500/20 border border-red-500/50 rounded-3xl p-4 flex items-start gap-3'>
-      <AlertTriangle className='h-6 w-6 text-red-500 shrink-0' />
+    <div className='bg-red-500/20 border border-red-500/50 rounded-2xl p-3 flex items-start gap-3'>
+      <AlertTriangle className='h-6 w-6 text-red-500 shrink-0 mt-[2px]' />
       <div className='flex-1'>
-        <h4 className='font-anton tracking-widest text-red-500 mt-[0.5px]'>
+        <h4 className='font-dmsans text-red-500 mt-[3px]'>
           {alert.title || "Predictive Alert"}
         </h4>
         <p className='text-dmsans text-red-500 mt-1'>{alert.message}</p>
         {alert.apiName && (
-          <p className='text-bricolage text-red-500 mt-2'>
-            API: {alert.apiName}
-          </p>
+          <p className='text-dmsans text-red-500 mt-2'>API: {alert.apiName}</p>
         )}
       </div>
       <button

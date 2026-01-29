@@ -81,8 +81,8 @@ const Dashboard = () => {
   if (loading && !stats) return <Loader size='lg' />;
 
   return (
-    <div className='h-[calc(100%-2rem)] space-y-3 px-6 py-7 m-4 bg-[#f5f5f6] rounded-3xl overflow-hidden'>
-      <div className='flex flex-col gap-5.5 rounded-[34px]'>
+    <div className='h-[calc(100%-2rem)] space-y-3 px-6 py-[22px] m-4 bg-[#f5f5f6] rounded-3xl overflow-hidden'>
+      <div className='flex flex-col gap-4 rounded-[34px]'>
         <div className='flex items-center justify-between'>
           <div>
             <h1 className='text-3xl text-black tracking-wider font-dmsans'>
@@ -158,14 +158,14 @@ const Dashboard = () => {
         )}
       </div>
 
-      <div className='grid grid-cols-1 lg:grid-cols-3 gap-5 mt-5 flex-1'>
+      <div className='grid grid-cols-1 lg:grid-cols-3 gap-5 mt-4 flex-1'>
         <div className='lg:col-span-2 flex flex-col'>
           <h2 className='text-sm font-semibold tracking-wide text-gray-600 mb-3'>
             Monitored APIs
           </h2>
           <div className='bg-white rounded-3xl p-5 shadow-sm flex-1 flex flex-col'>
             {apis.length === 0 ? (
-              <div className='h-full flex flex-col items-center justify-center min-h-80'>
+              <div className='h-full flex flex-col items-center justify-center min-h-[300px]'>
                 <p className='text-gray-400 mb-4 text-sm'>
                   No APIs monitored yet
                 </p>
@@ -201,7 +201,7 @@ const Dashboard = () => {
           <h2 className='text-sm font-semibold tracking-wide text-gray-600 mb-3'>
             Recent Anomalies
           </h2>
-          <div className='bg-white rounded-3xl p-5 shadow-sm flex-1 flex flex-col min-h-80'>
+          <div className='bg-white rounded-3xl p-5 shadow-sm flex-1 flex flex-col min-h-[300px]'>
             <div className='flex-1 flex items-center justify-center'>
               <AnomalyList anomalies={recentAnomalies} />
             </div>
