@@ -85,7 +85,7 @@ const Dashboard = () => {
       <div className='flex flex-col gap-4 rounded-[34px]'>
         <div className='flex items-center justify-between'>
           <div>
-            <h1 className='text-3xl text-black tracking-wider font-dmsans'>
+            <h1 className='text-2xl text-black tracking-wider font-dmsans'>
               Dashboard
             </h1>
             <p className='text-black/90 font-bricolage'>
@@ -118,7 +118,7 @@ const Dashboard = () => {
               value={stats.healthyCount}
               icon={CheckCircle}
               description='Operating normally'
-              className='px-6 py-6 rounded-3xl bg-white h-full'
+              className='px-6 py-6 rounded-3xl bg-white h-full border border-gray-200/70'
               iconClassName='p-2 bg-emerald-50 rounded-[10px] text-emerald-600'
               titleClassName='text-lg font-dmsans text-gray-500'
               valueClassName='text-[34px] font-dmsans text-gray-900'
@@ -130,7 +130,7 @@ const Dashboard = () => {
               value={stats.warningCount + stats.downCount}
               icon={AlertCircle}
               description='Warnings or downtime'
-              className='px-6 py-6 rounded-3xl bg-white h-full'
+              className='px-6 py-6 rounded-3xl bg-white h-full border border-gray-200/70'
               iconClassName='p-2 bg-red-50 rounded-[10px] text-red-500'
               titleClassName='text-lg font-dmsans text-gray-500'
               valueClassName='text-[34px] font-dmsans text-red-600'
@@ -142,7 +142,7 @@ const Dashboard = () => {
               value={stats.unacknowledgedAnomalies}
               icon={Bell}
               description='Unacknowledged'
-              className='px-6 py-6 rounded-3xl bg-white h-full'
+              className='px-6 py-6 rounded-3xl bg-white h-full border border-gray-200/70'
               iconClassName='p-2 bg-amber-50 rounded-[10px] text-amber-600'
               titleClassName='text-lg font-dmsans text-gray-500'
               valueClassName='text-[34px] font-dmsans text-amber-600'
@@ -163,9 +163,9 @@ const Dashboard = () => {
           <h2 className='text-md font-dmsans tracking-wide text-gray-600 mb-2'>
             Monitored APIs
           </h2>
-          <div className='bg-white rounded-3xl p-5 flex-1 flex flex-col'>
+          <div className='bg-white rounded-3xl p-5 flex-1 flex flex-col border border-gray-200/70'>
             {apis.length === 0 ? (
-              <div className='h-full flex flex-col items-center justify-center min-h-[304px]'>
+              <div className='h-full flex flex-col items-center justify-center min-h-[260px]'>
                 <p className='text-gray-400 mb-4 text-sm'>
                   No APIs monitored yet
                 </p>
@@ -183,10 +183,10 @@ const Dashboard = () => {
                   ))}
                 </div>
                 {apis.length > 2 && (
-                  <div className='mt-3 text-center border-t border-gray-100 pt-3'>
+                  <div className='mt-3 text-center'>
                     <Link
                       to={ROUTES.MONITORS}
-                      className='text-xs font-medium text-gray-500 hover:text-[#14412B] transition-colors'
+                      className='text-sm font-bricolage text-gray-500 hover:text-[#14412B] transition-colors'
                     >
                       View all ({apis.length}) →
                     </Link>
@@ -201,7 +201,7 @@ const Dashboard = () => {
           <h2 className='text-md font-dmsans tracking-wide text-gray-600 mb-2'>
             Recent Anomalies
           </h2>
-          <div className='bg-white rounded-3xl p-5 flex-1 flex flex-col min-h-[304px]'>
+          <div className='bg-white rounded-3xl p-5 flex-1 flex flex-col min-h-[280px] border border-gray-200/70'>
             <div className='flex-1 flex items-center justify-center'>
               <AnomalyList anomalies={recentAnomalies} />
             </div>

@@ -21,7 +21,7 @@ const AddApi = () => {
 
   return (
     <div className='h-[calc(100%-2rem)] m-4 bg-[#f5f5f6] rounded-3xl overflow-hidden'>
-      <div className='max-w-2xl mx-auto pt-6'>
+      <div className='max-w-2xl mx-auto pt-6 pb-16'>
         <h1 className='text-2xl font-dmsans mb-2 text-center text-gray-900'>
           Monitor New API
         </h1>
