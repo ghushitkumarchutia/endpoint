@@ -61,27 +61,27 @@ const ApiCard = ({ api }) => {
   return (
     <Link
       to={ROUTES.API_DETAILS.replace(":id", api._id)}
-      className='group bg-gray-50 border border-gray-200 rounded-2xl p-5 hover:border-[#14412B]/30 hover:bg-white transition-all hover:shadow-md relative'
+      className='group bg-gray-50 border border-gray-200 rounded-[18px] p-5 hover:border-[#14412B]/30 hover:bg-white transition-all hover:shadow-md relative'
     >
       {/* Arrow indicator on hover */}
       <div className='absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity'>
-        <ArrowUpRight className='h-4 w-4 text-gray-400' />
+        <ArrowUpRight className='h-4 w-4 text-black' />
       </div>
 
       {/* Header: Status Icon + Name + Method */}
       <div className='flex items-start gap-3 mb-4'>
         <div className={`p-2.5 rounded-xl ${statusConfig.iconBg}`}>
-          <StatusIcon className={`h-5 w-5 ${statusConfig.iconColor}`} />
+          <StatusIcon className={`h-8 w-8 ${statusConfig.iconColor}`} />
         </div>
         <div className='flex-1 min-w-0'>
-          <h3 className='font-semibold text-gray-900 truncate text-base'>
+          <h3 className='font-dmsans text-gray-900 truncate text-base'>
             {api.name}
           </h3>
-          <div className='flex items-center gap-2 mt-1'>
-            <span className='text-xs font-bold text-gray-500 bg-gray-200/70 px-2 py-0.5 rounded'>
+          <div className='flex items-center gap-1.5 mt-1'>
+            <span className='text-xs font-dmsans tracking-widest text-emerald-600 bg-emerald-50 px-2.5 py-0.5 rounded-lg'>
               {api.method}
             </span>
-            <span className='text-xs text-gray-400'>
+            <span className='text-xs font-bricolage text-gray-400'>
               {api.checkFrequency / 60000}m interval
             </span>
           </div>
@@ -89,39 +89,39 @@ const ApiCard = ({ api }) => {
       </div>
 
       {/* Stats Grid */}
-      <div className='grid grid-cols-2 gap-3 mb-4'>
+      <div className='grid grid-cols-2 gap-3 '>
         <div className='bg-white rounded-xl p-3 border border-gray-100'>
-          <div className='flex items-center gap-1.5 text-gray-400 text-xs mb-1'>
-            <Zap className='h-3 w-3' />
-            <span>Response Time</span>
+          <div className='flex items-center justify-center gap-[2px] text-gray-400 text-[13px] mb-1'>
+            <Zap className='h-4 w-4' />
+            <span className='font-bricolage'>Response Time</span>
           </div>
-          <p className='font-mono text-lg font-bold text-gray-900'>
+          <p className='text-lg font-dmsans font-bold text-gray-900 text-center'>
             {api.avgResponseTime}
-            <span className='text-sm font-normal text-gray-500'>ms</span>
+            <span className='text-sm font-dmsans text-gray-500'>ms</span>
           </p>
         </div>
         <div className='bg-white rounded-xl p-3 border border-gray-100'>
-          <div className='flex items-center gap-1.5 text-gray-400 text-xs mb-1'>
-            <Clock className='h-3 w-3' />
-            <span>Uptime (24h)</span>
+          <div className='flex items-center justify-center gap-[2px] text-gray-400 text-[13px] mb-1'>
+            <Clock className='h-4 w-4' />
+            <span className='font-bricolage'>Uptime (24h)</span>
           </div>
           <p
-            className={`font-mono text-lg font-bold ${getUptimeColor(api.uptime)}`}
+            className={`font-dmsans text-lg text-center ${getUptimeColor(api.uptime)}`}
           >
             {api.uptime}
-            <span className='text-sm font-normal'>%</span>
+            <span className='text-sm font-dmsans'>%</span>
           </p>
         </div>
       </div>
 
       {/* Footer: Last checked */}
-      <div className='flex items-center justify-between pt-3 border-t border-gray-100'>
-        <div className='flex items-center gap-1.5 text-xs text-gray-400'>
-          <Clock className='h-3 w-3' />
+      <div className='flex items-center justify-between pt-3'>
+        <div className='flex items-center gap-1.5 text-[13px] text-gray-400 font-bricolage'>
+          <Clock className='h-4 w-4' />
           <span>Last checked: {formatRelativeTime(api.lastChecked)}</span>
         </div>
         <span
-          className={`text-xs px-2 py-0.5 rounded-full border ${statusConfig.badgeBg}`}
+          className={`text-[11px] px-2 py-0.5 rounded-[9px] border ${statusConfig.badgeBg}`}
         >
           {statusConfig.badge}
         </span>

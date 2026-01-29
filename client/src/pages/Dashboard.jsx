@@ -106,11 +106,11 @@ const Dashboard = () => {
               value={stats.totalApis}
               icon={Monitor}
               description='Active endpoints'
-              className='px-6 py-6 rounded-3xl bg-gradient-to-br from-[#14412B] to-[#208052] text-white h-full'
-              iconClassName='p-2 bg-white/20 rounded-xl'
-              titleClassName='text-sm font-medium text-emerald-100'
-              valueClassName='text-4xl font-bold text-white'
-              descriptionClassName='text-xs text-emerald-200'
+              className='px-6 py-6 rounded-3xl bg-linear-to-br from-[#14412B] to-[#208052] text-white h-full'
+              iconClassName='p-2 bg-white/20 rounded-[10px]'
+              titleClassName='text-lg font-dmsans text-emerald-100'
+              valueClassName='text-[34px] font-dmsans text-white'
+              descriptionClassName='text-[13px] text-emerald-200 font-bricolage'
             />
 
             <StatsCard
@@ -118,11 +118,11 @@ const Dashboard = () => {
               value={stats.healthyCount}
               icon={CheckCircle}
               description='Operating normally'
-              className='px-6 py-6 rounded-3xl bg-white h-full shadow-sm'
-              iconClassName='p-2 bg-emerald-50 rounded-xl text-emerald-600'
-              titleClassName='text-sm font-medium text-gray-500'
-              valueClassName='text-4xl font-bold text-gray-900'
-              descriptionClassName='text-xs text-emerald-600'
+              className='px-6 py-6 rounded-3xl bg-white h-full'
+              iconClassName='p-2 bg-emerald-50 rounded-[10px] text-emerald-600'
+              titleClassName='text-lg font-dmsans text-gray-500'
+              valueClassName='text-[34px] font-dmsans text-gray-900'
+              descriptionClassName='text-[13px] text-emerald-600 font-bricolage'
             />
 
             <StatsCard
@@ -130,11 +130,11 @@ const Dashboard = () => {
               value={stats.warningCount + stats.downCount}
               icon={AlertCircle}
               description='Warnings or downtime'
-              className='px-6 py-6 rounded-3xl bg-white h-full shadow-sm'
-              iconClassName='p-2 bg-red-50 rounded-xl text-red-500'
-              titleClassName='text-sm font-medium text-gray-500'
-              valueClassName='text-4xl font-bold text-red-600'
-              descriptionClassName='text-xs text-red-500'
+              className='px-6 py-6 rounded-3xl bg-white h-full'
+              iconClassName='p-2 bg-red-50 rounded-[10px] text-red-500'
+              titleClassName='text-lg font-dmsans text-gray-500'
+              valueClassName='text-[34px] font-dmsans text-red-600'
+              descriptionClassName='text-[13px] text-red-500 font-bricolage'
             />
 
             <StatsCard
@@ -142,11 +142,11 @@ const Dashboard = () => {
               value={stats.unacknowledgedAnomalies}
               icon={Bell}
               description='Unacknowledged'
-              className='px-6 py-6 rounded-3xl bg-white h-full shadow-sm'
-              iconClassName='p-2 bg-amber-50 rounded-xl text-amber-600'
-              titleClassName='text-sm font-medium text-gray-500'
-              valueClassName='text-4xl font-bold text-amber-600'
-              descriptionClassName='text-xs text-amber-500'
+              className='px-6 py-6 rounded-3xl bg-white h-full'
+              iconClassName='p-2 bg-amber-50 rounded-[10px] text-amber-600'
+              titleClassName='text-lg font-dmsans text-gray-500'
+              valueClassName='text-[34px] font-dmsans text-amber-600'
+              descriptionClassName='text-[13px] text-amber-500 font-bricolage'
             />
           </div>
         )}
@@ -158,14 +158,14 @@ const Dashboard = () => {
         )}
       </div>
 
-      <div className='grid grid-cols-1 lg:grid-cols-3 gap-5 mt-4 flex-1'>
+      <div className='grid grid-cols-1 lg:grid-cols-3 gap-5 mt-3 flex-1'>
         <div className='lg:col-span-2 flex flex-col'>
-          <h2 className='text-sm font-semibold tracking-wide text-gray-600 mb-3'>
+          <h2 className='text-md font-dmsans tracking-wide text-gray-600 mb-2'>
             Monitored APIs
           </h2>
-          <div className='bg-white rounded-3xl p-5 shadow-sm flex-1 flex flex-col'>
+          <div className='bg-white rounded-3xl p-5 flex-1 flex flex-col'>
             {apis.length === 0 ? (
-              <div className='h-full flex flex-col items-center justify-center min-h-[300px]'>
+              <div className='h-full flex flex-col items-center justify-center min-h-[304px]'>
                 <p className='text-gray-400 mb-4 text-sm'>
                   No APIs monitored yet
                 </p>
@@ -198,17 +198,17 @@ const Dashboard = () => {
         </div>
 
         <div className='flex flex-col'>
-          <h2 className='text-sm font-semibold tracking-wide text-gray-600 mb-3'>
+          <h2 className='text-md font-dmsans tracking-wide text-gray-600 mb-2'>
             Recent Anomalies
           </h2>
-          <div className='bg-white rounded-3xl p-5 shadow-sm flex-1 flex flex-col min-h-[300px]'>
+          <div className='bg-white rounded-3xl p-5 flex-1 flex flex-col min-h-[304px]'>
             <div className='flex-1 flex items-center justify-center'>
               <AnomalyList anomalies={recentAnomalies} />
             </div>
             <div className='mt-3 text-center border-t border-gray-100 pt-3'>
               <Link
                 to={ROUTES.NOTIFICATIONS}
-                className='text-xs text-gray-500 hover:text-[#14412B] transition-colors'
+                className='text-sm font-bricolage text-gray-500 hover:text-[#14412B] transition-colors'
               >
                 View all notifications →
               </Link>

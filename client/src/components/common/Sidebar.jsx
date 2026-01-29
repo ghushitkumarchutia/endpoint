@@ -88,7 +88,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                   className={`h-[22px] w-[22px] transition-colors ${isActive ? "text-[#14412B]" : "text-gray-400 group-hover:text-gray-600"}`}
                 />
                 <span
-                  className={`text-[18px] ${isActive ? "font-dmsans" : "font-dmsans"}`}
+                  className={`text-[17px] ${isActive ? "font-dmsans" : "font-dmsans"}`}
                 >
                   {item.label}
                 </span>
@@ -101,7 +101,7 @@ const Sidebar = ({ isOpen, onClose }) => {
         <div className='p-4 border-t border-gray-200 shrink-0'>
           <button
             onClick={logout}
-            className='flex items-center gap-3 px-4 py-3.5 w-full rounded-[14px] text-sm font-dmsans text-white bg-[#14412B] hover:bg-[#1a5438] transition-colors cursor-pointer'
+            className='flex items-center gap-3 px-4 py-3 w-full rounded-[14px] text-[16px] font-dmsans text-white bg-[#14412B] hover:bg-[#1a5438] transition-colors cursor-pointer'
           >
             <LogOut className='h-4.5 w-4.5' />
             Logout

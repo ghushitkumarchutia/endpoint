@@ -12,22 +12,24 @@ const AlertBanner = ({ alert, onDismiss }) => {
   };
 
   return (
-    <div className='bg-red-500/20 border border-red-500/50 rounded-2xl p-3 flex items-start gap-3'>
-      <AlertTriangle className='h-6 w-6 text-red-500 shrink-0 mt-[2px]' />
-      <div className='flex-1'>
-        <h4 className='font-dmsans text-red-500 mt-[3px]'>
+    <div className='bg-red-500/10 border border-red-500/30 rounded-[14px] pl-4 pr-1.5 h-10 flex items-center gap-3'>
+      <AlertTriangle className='h-4.5 w-4.5 text-red-500 shrink-0 ' />
+      <div className='flex-1 h-full flex items-center'>
+        <h4 className='font-bricolage text-red-500 mt-[px]'>
           {alert.title || "Predictive Alert"}
         </h4>
-        <p className='text-dmsans text-red-500 mt-1'>{alert.message}</p>
+        <p className='text-bricolage text-red-500 mt-1'>{alert.message}</p>
         {alert.apiName && (
-          <p className='text-dmsans text-red-500 mt-2'>API: {alert.apiName}</p>
+          <p className='text-bricolage text-red-500 mt-2'>
+            API: {alert.apiName}
+          </p>
         )}
       </div>
       <button
         onClick={handleDismiss}
-        className='p-1 rounded-full cursor-pointer hover:bg-white/20 transition-colors'
+        className='p-1.5 rounded-full cursor-pointer hover:bg-white/20 transition-colors'
       >
-        <X className='h-5 w-5 text-red-500' />
+        <X className='h-4 w-4 text-red-500' />
       </button>
     </div>
   );
