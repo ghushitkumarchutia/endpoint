@@ -5,7 +5,7 @@ import { SEVERITY_COLORS } from "../../utils/constants";
 const AnomalyList = ({ anomalies }) => {
   if (!anomalies || anomalies.length === 0) {
     return (
-      <div className='text-center py-8 text-neutral-400 bg-neutral-800/50 rounded-2xl border border-dashed border-neutral-700'>
+      <div className='text-center py-8 px-8 text-neutral-400 bg-neutral-800/50 rounded-2xl border border-dashed border-neutral-700'>
         No recent anomalies detected
       </div>
     );

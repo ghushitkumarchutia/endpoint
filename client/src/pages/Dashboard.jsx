@@ -82,7 +82,7 @@ const Dashboard = () => {
 
   return (
     <div className='flex-1 h-full bg-black space-y-3 px-8 py-8'>
-      <div className='flex flex-col gap-[22px] rounded-[34px]'>
+      <div className='flex flex-col gap-5.5 rounded-[34px]'>
         <div className='flex items-center justify-between'>
           <div>
             <h1 className='text-3xl text-white tracking-widest font-bold font-anton'>
@@ -95,7 +95,7 @@ const Dashboard = () => {
           <QuickActions onRefresh={handleRefresh} onExport={handleExport} />
         </div>
         {stats && (
-          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[18px] rounded-[28px]'>
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4.5 rounded-[28px]'>
             <StatsCard
               title='Total Monitors'
               value={stats.totalApis}
@@ -113,7 +113,7 @@ const Dashboard = () => {
               icon={AlertTriangle}
               description='Warnings or downtime'
             />
-            <div className='h-[190px] bg-[#2C2C2C]/80 px-[30px] py-7 rounded-[32px] border border-[#363636] flex flex-col'>
+            <div className='h-47.5 bg-[#2C2C2C]/80 px-7.5 py-7 rounded-4xl border border-[#363636] flex flex-col'>
               <span className='text-[24px] font-anton tracking-wider uppercase text-white'>
                 Total anomalies today
               </span>
@@ -138,7 +138,7 @@ const Dashboard = () => {
           </h2>
           <div className='grid grid-cols-1 md:grid-cols-2 gap-4 flex-1'>
             {apis.length === 0 ? (
-              <div className='col-span-2 flex flex-col items-center justify-center min-h-[200px] border border-neutral-700 rounded-[28px] bg-neutral-900/50'>
+              <div className='col-span-2 flex flex-col items-center justify-center min-h-50 border border-neutral-700 rounded-[28px] bg-neutral-900/50'>
                 <p className='text-neutral-400 mb-4'>No APIs monitored yet</p>
                 <Link to={ROUTES.ADD_API}>
                   <Button className='rounded-full bg-neutral-800 hover:bg-neutral-700 text-white font-bricolage px-8 py-3'>
@@ -156,7 +156,7 @@ const Dashboard = () => {
           <h2 className='text-xl font-anton tracking-wider uppercase text-white'>
             Recent Anomalies
           </h2>
-          <div className='bg-neutral-900/50 border border-neutral-700 rounded-[28px] p-5 flex-1 flex flex-col min-h-[200px]'>
+          <div className='bg-neutral-900/50 border border-neutral-700 rounded-[28px] p-5 flex-1 flex flex-col min-h-50'>
             <div className='flex-1 flex items-center justify-center'>
               <AnomalyList anomalies={recentAnomalies} />
             </div>

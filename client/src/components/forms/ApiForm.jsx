@@ -45,7 +45,7 @@ const ApiForm = ({ initialData, onSubmit, isLoading }) => {
             HTTP Method
           </label>
           <select
-            className='flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary'
+            className='flex h-10 w-full border border-[#363636] bg-[#151515] rounded-xl py-5.5 px-4 text-sm text-white focus-visible:outline-none focus-visible:ring-0'
             {...register("method")}
           >
             {API_METHODS.map((method) => (
@@ -76,7 +76,7 @@ const ApiForm = ({ initialData, onSubmit, isLoading }) => {
             Check Frequency
           </label>
           <select
-            className='flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary'
+            className='flex h-10 w-full border border-[#363636] bg-[#151515] rounded-xl py-5.5 px-4 text-sm text-white focus-visible:outline-none focus-visible:ring-0'
             {...register("checkFrequency")}
           >
             {CHECK_FREQUENCIES.map((freq) => (
@@ -103,23 +103,28 @@ const ApiForm = ({ initialData, onSubmit, isLoading }) => {
             Description (Optional)
           </label>
           <textarea
-            className='flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary'
+            className='flex min-h-20 w-full border border-[#363636] bg-[#151515] rounded-xl py-3 px-4 text-sm text-white focus-visible:outline-none focus-visible:ring-0'
             placeholder="Brief description of this API's purpose..."
             {...register("description")}
           />
         </div>
       </div>
 
-      <div className='flex justify-end gap-3 pt-4 border-t border-border'>
+      <div className='flex justify-end gap-3'>
         <Button
           type='button'
           variant='ghost'
           onClick={() => window.history.back()}
+          className='bg-white text-black text-md px-7 py-2 rounded-xl cursor-pointer hover:scale-102 transition-transform'
         >
           Cancel
         </Button>
-        <Button type='submit' isLoading={isLoading}>
-          {initialData ? "Update API" : "Create Monitor"}
+        <Button
+          type='submit'
+          isLoading={isLoading}
+          className='bg-white text-black text-md px-7 py-2 rounded-xl cursor-pointer hover:scale-102 transition-transform'
+        >
+          {initialData ? "Update API" : "Create"}
         </Button>
       </div>
     </form>
