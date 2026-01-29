@@ -1,7 +1,13 @@
 import { Plus, Play, RefreshCw, Download } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-const QuickActions = ({ onRefresh, onExport }) => {
+const QuickActions = ({
+  onRefresh,
+  onExport,
+  className = "",
+  buttonClassName = "",
+  primaryButtonClassName = "",
+}) => {
   const navigate = useNavigate();
 
   const actions = [
@@ -16,17 +22,16 @@ const QuickActions = ({ onRefresh, onExport }) => {
     { label: "Export", icon: Download, onClick: onExport },
   ];
 
+  const baseButtonStyles =
+    "inline-flex items-center cursor-pointer gap-1.5 px-5 py-2.5 rounded-full text-sm font-medium transition-colors font-bricolage";
+
   return (
-    <div className='flex flex-wrap gap-3'>
+    <div className={`flex flex-wrap gap-3 ${className}`}>
       {actions.map((action) => (
         <button
           key={action.label}
           onClick={action.onClick}
-          className={`inline-flex items-center cursor-pointer gap-[6px] px-5 py-3 rounded-full text-[16px] font-medium text-white hover:bg-white/20 hover:text-white transition-colors bg-[#2C2C2C]/90 border border-[#363636]/90 font-bricolage ${
-            action.primary
-              ? "bg-primary text-primary-foreground hover:bg-primary/90"
-              : "bg-[#2C2C2C]/80 hover:bg-[#2C2C2C]/80"
-          }`}
+          className={`${baseButtonStyles} ${action.primary ? primaryButtonClassName : buttonClassName}`}
         >
           <action.icon className='h-4 w-4' />
           {action.label}

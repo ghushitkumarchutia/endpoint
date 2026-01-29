@@ -21,7 +21,7 @@ const Navbar = () => {
   const userInitial = user?.name?.charAt(0)?.toUpperCase() || "U";
 
   return (
-    <nav className='sticky top-0 z-40 w-full border-b border-neutral-800 bg-black'>
+    <nav className='sticky top-0 z-40 w-full  bg-white'>
       <div className='w-full px-6 h-[68px] flex items-center justify-between'>
         {/* Logo - left end */}
         <Link
@@ -31,7 +31,7 @@ const Navbar = () => {
           <div className='h-7 w-7 bg-white rounded flex items-center justify-center'>
             <span className='text-black font-bold text-sm'>E</span>
           </div>
-          <span className='font-semibold text-base text-white'>{APP_NAME}</span>
+          <span className='font-semibold text-base text-black'>{APP_NAME}</span>
         </Link>
 
         {/* Right side - notification + profile + logout */}

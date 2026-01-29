@@ -32,7 +32,7 @@ const Sidebar = () => {
   const location = useLocation();
 
   return (
-    <aside className='w-52 bg-black border-r border-neutral-800 flex-shrink-0 hidden md:block'>
+    <aside className='w-60 bg-black border-r border-neutral-800 flex-shrink-0 hidden md:block'>
       <nav className='p-3 space-y-1'>
         {navItems.map((item) => {
           const Icon = item.icon;

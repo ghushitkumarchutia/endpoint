@@ -81,46 +81,70 @@ const Dashboard = () => {
   if (loading && !stats) return <Loader size='lg' />;
 
   return (
-    <div className='flex-1 h-full bg-black space-y-3 px-8 py-8'>
+    <div className='h-[calc(100%-2rem)] space-y-3 px-6 py-7 m-4 bg-[#f5f5f6] rounded-3xl overflow-hidden'>
       <div className='flex flex-col gap-5.5 rounded-[34px]'>
         <div className='flex items-center justify-between'>
           <div>
-            <h1 className='text-3xl text-white tracking-widest font-bold font-anton'>
+            <h1 className='text-3xl text-black tracking-wider font-dmsans'>
               Dashboard
             </h1>
-            <p className='text-white/90 font-bricolage'>
+            <p className='text-black/90 font-bricolage'>
               Overview of your API ecosystem
             </p>
           </div>
-          <QuickActions onRefresh={handleRefresh} onExport={handleExport} />
+          <QuickActions
+            onRefresh={handleRefresh}
+            onExport={handleExport}
+            primaryButtonClassName='bg-[#14412B] text-white border border-[#14412B] hover:bg-[#1a5438]'
+            buttonClassName='bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 hover:border-gray-400 active:scale-95'
+          />
         </div>
         {stats && (
-          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4.5 rounded-[28px]'>
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'>
             <StatsCard
               title='Total Monitors'
               value={stats.totalApis}
               icon={Activity}
+              className='px-8 py-9 rounded-3xl bg-gradient-to-br from-[#14412B] to-[#208052] text-white'
+              titleClassName='text-sm font-medium text-emerald-100'
+              valueClassName='text-5xl font-bold text-white'
+              descriptionClassName='text-emerald-200'
+              contentClassName='flex flex-col gap-2'
             />
+
             <StatsCard
               title='Healthy APIs'
               value={stats.healthyCount}
               icon={Globe}
               description='Operating normally'
+              className='px-8 py-9 rounded-3xl bg-[#FFF]'
+              titleClassName='text-sm font-medium text-gray-500'
+              valueClassName='text-5xl font-bold text-gray-900'
+              descriptionClassName='text-sm text-emerald-600'
+              contentClassName='flex flex-col gap-2'
             />
+
             <StatsCard
               title='Issues'
               value={stats.warningCount + stats.downCount}
               icon={AlertTriangle}
               description='Warnings or downtime'
+              className='px-8 py-9 rounded-3xl bg-[#FFF]'
+              titleClassName='text-sm font-medium text-gray-500'
+              valueClassName='text-5xl font-bold text-red-600'
+              descriptionClassName='text-sm text-red-500'
+              contentClassName='flex flex-col gap-2'
             />
-            <div className='h-47.5 bg-[#2C2C2C]/80 px-7.5 py-7 rounded-4xl border border-[#363636] flex flex-col'>
-              <span className='text-[24px] font-anton tracking-wider uppercase text-white'>
-                Total anomalies today
-              </span>
-              <span className='text-[44px] font-bold text-white mt-1'>
-                {stats.unacknowledgedAnomalies}
-              </span>
-            </div>
+
+            <StatsCard
+              title='Total Anomalies'
+              value={stats.unacknowledgedAnomalies}
+              icon={AlertTriangle}
+              className='px-8 py-9 rounded-3xl bg-[#FFF]'
+              titleClassName='text-sm font-medium text-gray-500'
+              valueClassName='text-5xl font-bold text-amber-600'
+              contentClassName='flex flex-col gap-2'
+            />
           </div>
         )}
         {predictiveAlert && (
@@ -133,15 +157,15 @@ const Dashboard = () => {
 
       <div className='grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6 flex-1'>
         <div className='lg:col-span-2 flex flex-col space-y-4'>
-          <h2 className='text-xl font-anton tracking-wider uppercase text-white'>
+          <h2 className='text-xl font-anton tracking-wider uppercase text-gray-800'>
             Monitored APIs
           </h2>
           <div className='grid grid-cols-1 md:grid-cols-2 gap-4 flex-1'>
             {apis.length === 0 ? (
-              <div className='col-span-2 flex flex-col items-center justify-center min-h-50 border border-neutral-700 rounded-[28px] bg-neutral-900/50'>
-                <p className='text-neutral-400 mb-4'>No APIs monitored yet</p>
+              <div className='col-span-2 flex flex-col items-center justify-center min-h-50 border border-gray-300 rounded-[28px] bg-white/50'>
+                <p className='text-gray-500 mb-4'>No APIs monitored yet</p>
                 <Link to={ROUTES.ADD_API}>
-                  <Button className='rounded-full bg-neutral-800 hover:bg-neutral-700 text-white font-bricolage px-8 py-3'>
+                  <Button className='rounded-full bg-gray-800 hover:bg-gray-700 text-white font-bricolage px-8 py-3'>
                     Create your first monitor
                   </Button>
                 </Link>
@@ -153,17 +177,17 @@ const Dashboard = () => {
         </div>
 
         <div className='flex flex-col space-y-4'>
-          <h2 className='text-xl font-anton tracking-wider uppercase text-white'>
+          <h2 className='text-xl font-anton tracking-wider uppercase text-gray-800'>
             Recent Anomalies
           </h2>
-          <div className='bg-neutral-900/50 border border-neutral-700 rounded-[28px] p-5 flex-1 flex flex-col min-h-50'>
+          <div className='bg-white/50 border border-gray-300 rounded-[28px] p-5 flex-1 flex flex-col min-h-50'>
             <div className='flex-1 flex items-center justify-center'>
               <AnomalyList anomalies={recentAnomalies} />
             </div>
             <div className='mt-4 text-center'>
               <Link
                 to={ROUTES.NOTIFICATIONS}
-                className='text-sm text-neutral-400 hover:text-white transition-colors'
+                className='text-sm text-gray-500 hover:text-gray-800 transition-colors'
               >
                 View all notifications
               </Link>

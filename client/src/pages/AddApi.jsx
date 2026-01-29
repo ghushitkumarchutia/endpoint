@@ -20,13 +20,13 @@ const AddApi = () => {
   };
 
   return (
-    <div className='container mx-auto px-4 py-8 max-w-2xl'>
+    <div className='container mx-auto px-4 pt-10 max-w-2xl'>
       <h1 className='text-2xl font-bold mb-2 text-center'>Monitor New API</h1>
       <p className='text-muted-foreground mb-6 text-center'>
         Configure tracking for a new endpoint.
       </p>
 
-      <div className='bg-black border border-[#363636] rounded-[38px] pt-11 pb-6 px-10 shadow-2xl shadow-white/5'>
+      <div className='bg-black border border-[#363636] rounded-[38px] pt-16 pb-6 px-10 shadow-2xl shadow-white/5'>
         <ApiForm onSubmit={onSubmit} isLoading={loading} />
       </div>
     </div>

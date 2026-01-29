@@ -65,7 +65,7 @@ const AppLayout = ({ children }) => {
 
 function AppContent() {
   return (
-    <div className='min-h-screen flex flex-col bg-[#101010] text-white font-sans antialiased'>
+    <div className='min-h-screen flex flex-col bg-white text-black font-sans antialiased'>
       <Navbar />
       <AppLayout>
         <Routes>
