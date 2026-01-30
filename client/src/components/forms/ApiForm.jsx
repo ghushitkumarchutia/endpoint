@@ -32,7 +32,7 @@ const ApiForm = ({ initialData, onSubmit, isLoading }) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='space-y-5'>
-      <div className='grid grid-cols-1 md:grid-cols-2 gap-5'>
+      <div className='grid grid-cols-1 md:grid-cols-2 gap-2.5 md:gap-5'>
         <Input
           label='API Name'
           placeholder='e.g. Stripe Payment API'
@@ -45,7 +45,7 @@ const ApiForm = ({ initialData, onSubmit, isLoading }) => {
             HTTP Method
           </label>
           <select
-            className='flex h-10 w-full border border-gray-300 bg-white rounded-xl py-2 px-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#14412B]/20 focus:border-[#14412B]'
+            className='flex w-full border border-gray-200 bg-[#f9fafb] rounded-[14px] px-2.5 py-3 text-sm font-bricolage text-gray-900 focus:outline-none focus:border-[#14412B]/30 focus:bg-white focus:ring-4 focus:ring-[#14412B]/5 transition-all duration-200'
             {...register("method")}
           >
             {API_METHODS.map((method) => (
@@ -76,7 +76,7 @@ const ApiForm = ({ initialData, onSubmit, isLoading }) => {
             Check Frequency
           </label>
           <select
-            className='flex h-10 w-full border border-gray-300 bg-white rounded-xl py-2 px-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#14412B]/20 focus:border-[#14412B]'
+            className='flex w-full border border-gray-200 bg-[#f9fafb] rounded-[14px] px-2.5 py-3 text-sm font-bricolage text-gray-900 focus:outline-none focus:border-[#14412B]/30 focus:bg-white focus:ring-4 focus:ring-[#14412B]/5 transition-all duration-200'
             {...register("checkFrequency")}
           >
             {CHECK_FREQUENCIES.map((freq) => (
@@ -103,26 +103,26 @@ const ApiForm = ({ initialData, onSubmit, isLoading }) => {
             Description (Optional)
           </label>
           <textarea
-            className='flex min-h-20 w-full border border-gray-300 bg-white rounded-xl py-3 px-4 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#14412B]/20 focus:border-[#14412B] resize-none'
+            className='flex min-h-24 w-full border border-gray-200 bg-[#f9fafb] rounded-[14px] py-3 px-4 text-sm font-bricolage text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#14412B]/30 focus:bg-white focus:ring-4 focus:ring-[#14412B]/5 transition-all duration-200 resize-none'
             placeholder="Brief description of this API's purpose..."
             {...register("description")}
           />
         </div>
       </div>
 
-      <div className='flex justify-end gap-3 pt-4 border-t border-gray-100'>
+      <div className='flex justify-end gap-3 pt-2 md:pt-3'>
         <Button
           type='button'
           variant='ghost'
           onClick={() => window.history.back()}
-          className='bg-white text-gray-700 border border-gray-300 px-6 py-2 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors'
+          className='bg-white text-gray-700 border border-gray-300 md:px-6 px-5 md:py-2 py-1.5 rounded-full cursor-pointer hover:bg-gray-50 transition-colors'
         >
           Cancel
         </Button>
         <Button
           type='submit'
           isLoading={isLoading}
-          className='bg-[#14412B] text-white px-6 py-2 rounded-xl cursor-pointer hover:bg-[#1a5438] transition-colors'
+          className='bg-[#14412B] text-white md:px-6 px-5 md:py-2 py-1.5 rounded-full cursor-pointer hover:bg-[#1a5438] transition-colors'
         >
           {initialData ? "Update API" : "Create"}
         </Button>

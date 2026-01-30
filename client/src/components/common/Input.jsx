@@ -12,8 +12,8 @@ const Input = forwardRef(
         <input
           ref={ref}
           type={type}
-          className={`flex h-10 w-full border border-gray-300 bg-white rounded-xl py-2 px-4 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#14412B]/20 focus:border-[#14412B] disabled:cursor-not-allowed disabled:opacity-50 ${
-            error ? "border-red-500 focus:ring-red-500/20" : ""
+          className={`flex w-full border border-gray-200 bg-[#f9fafb] rounded-[14px] px-4 py-3 text-sm font-bricolage text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#14412B]/30 focus:bg-white focus:ring-4 focus:ring-[#14412B]/5 transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 ${
+            error ? "border-red-500 focus:ring-red-500/10" : ""
           } ${className}`}
           {...props}
         />
