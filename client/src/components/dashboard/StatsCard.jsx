@@ -28,7 +28,10 @@ const StatsCard = forwardRef(
           <p className={titleClassName}>{title}</p>
           {Icon && (
             <div className={iconClassName}>
-              <Icon className='h-5 w-5' aria-hidden='true' />
+              <Icon
+                className='md:h-5 md:w-5 h-[13px] w-[13px]'
+                aria-hidden='true'
+              />
             </div>
           )}
         </div>

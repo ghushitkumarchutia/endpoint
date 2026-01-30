@@ -55,7 +55,16 @@ const AppLayout = ({ children }) => {
 
   return (
     <>
-      <div className='min-h-screen bg-white'>
+      {/* 
+         Outer container: Strictly h-screen and overflow-hidden to prevent window scroll. 
+         bg-white to show through gaps (floating effect).
+      */}
+      {/* 
+         Outer container: 
+         - Mobile: min-h-screen (grows with content), window scrolls.
+         - Desktop (lg): h-screen overflow-hidden (app-like fixed layout).
+      */}
+      <div className='w-screen bg-white min-h-screen lg:h-screen lg:overflow-hidden'>
         {showSidebar && (
           <Sidebar
             isOpen={isSidebarOpen}
@@ -65,18 +74,24 @@ const AppLayout = ({ children }) => {
 
         {/* 
            Content Wrapper 
-           - Uses 'md:pl-64' padding-left instead of margin to prevent layout collapsing/overflow issues. 
-           - Padding ensures the content starts exactly after the 64width sidebar.
-           - Transition for smooth sidebar feeling if needed.
+           - Uses 'md:pl-64' padding-left to clear standard sidebar space.
+           - Flex column to stack Navbar and Main content.
+           - h-full to fill the screen on desktop.
         */}
         <div
-          className={`transition-all duration-300 min-h-screen flex flex-col ${showSidebar ? "md:pl-64" : ""}`}
+          className={`flex flex-col ${showSidebar ? "md:pl-64" : ""} h-full`}
         >
           {/* Navbar stuck nicely inside the content area */}
           {showSidebar && <Navbar onMenuClick={() => setIsSidebarOpen(true)} />}
 
-          {/* Main Scrollable Content */}
-          <main className='flex-1 overflow-x-hidden'>{children}</main>
+          {/* 
+             Main Content Area
+             - Desktop: flex-1 overflow-hidden (internal scroll if needed).
+             - Mobile: overflow-visible (let page scroll).
+          */}
+          <main className='flex-1 p-4 pt-4 overflow-visible lg:overflow-hidden'>
+            {children}
+          </main>
         </div>
       </div>
       {showFooter && <Footer />}

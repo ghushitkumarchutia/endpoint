@@ -23,17 +23,19 @@ const QuickActions = ({
   ];
 
   const baseButtonStyles =
-    "inline-flex items-center cursor-pointer gap-1.5 px-5 py-2.5 rounded-full text-sm font-medium transition-colors font-bricolage";
+    "inline-flex items-center cursor-pointer gap-1.5 md:px-5 md:py-2.5 px-[12px] py-[7px] rounded-full text-[12.5px] md:text-sm transition-colors font-bricolage";
 
   return (
-    <div className={`flex flex-wrap gap-3 ${className}`}>
+    <div
+      className={`flex flex-wrap justify-center md:justify-normal gap-1 md:gap-3 mt-2 md:mt-0 ${className}`}
+    >
       {actions.map((action) => (
         <button
           key={action.label}
           onClick={action.onClick}
           className={`${baseButtonStyles} ${action.primary ? primaryButtonClassName : buttonClassName}`}
         >
-          <action.icon className='h-4 w-4' />
+          <action.icon className='md:h-4 md:w-4 h-3 w-3' />
           {action.label}
         </button>
       ))}

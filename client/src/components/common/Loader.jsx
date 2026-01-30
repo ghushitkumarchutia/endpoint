@@ -10,7 +10,7 @@ const Loader = ({ size = "default", className = "" }) => {
   return (
     <div className='flex justify-center items-center w-full h-full p-4'>
       <Loader2
-        className={`animate-spin text-primary ${sizes[size]} ${className}`}
+        className={`animate-spin text-[#14412B] ${sizes[size]} ${className}`}
       />
     </div>
   );
