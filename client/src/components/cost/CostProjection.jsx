@@ -1,4 +1,4 @@
-import { TrendingUp, Calendar } from "lucide-react";
+import { TrendingUp, Calendar, ArrowRight } from "lucide-react";
 
 const CostProjection = ({ currentCost = 0, projectedCost = 0, trend }) => {
   const safeCurrent = Number(currentCost) || 0;
@@ -7,39 +7,63 @@ const CostProjection = ({ currentCost = 0, projectedCost = 0, trend }) => {
   const isIncreasing = difference > 0;
 
   return (
-    <div className='bg-card border border-border rounded-xl p-6'>
-      <div className='flex items-center gap-2 mb-4'>
-        <Calendar className='h-5 w-5 text-muted-foreground' />
-        <h3 className='font-semibold'>Monthly Projection</h3>
+    <div className='space-y-5'>
+      <div className='flex flex-col gap-1'>
+        <span className='text-[10px] font-bold text-gray-400 uppercase tracking-wider'>
+          Current Month
+        </span>
+        <div className='flex items-center gap-3'>
+          <span className='text-3xl font-bold font-dmsans text-gray-900'>
+            ${safeCurrent.toFixed(2)}
+          </span>
+          <span className='text-gray-300'>
+            <ArrowRight className='h-5 w-5' />
+          </span>
+          <span className='text-3xl font-bold font-dmsans text-gray-400'>
+            ${safeProjected.toFixed(2)}
+          </span>
+        </div>
+        <span className='text-[10px] font-bold text-gray-400 uppercase tracking-wider mt-1'>
+          Projected Total
+        </span>
       </div>
 
-      <div className='space-y-4'>
-        <div>
-          <p className='text-sm text-muted-foreground mb-1'>Current Month</p>
-          <p className='text-2xl font-bold'>${safeCurrent.toFixed(2)}</p>
-        </div>
-
-        <div className='border-t border-border pt-4'>
-          <p className='text-sm text-muted-foreground mb-1'>Projected Total</p>
-          <div className='flex items-baseline gap-2'>
-            <p className='text-3xl font-bold'>${safeProjected.toFixed(2)}</p>
-            <div
-              className={`flex items-center gap-1 text-sm ${isIncreasing ? "text-red-500" : "text-green-500"}`}
+      <div
+        className={`p-4 rounded-xl border ${isIncreasing ? "bg-amber-50 border-amber-100" : "bg-green-50 border-green-100"}`}
+      >
+        <div className='flex items-center gap-3'>
+          <div
+            className={`p-2 rounded-lg ${isIncreasing ? "bg-amber-100 text-amber-600" : "bg-green-100 text-green-600"}`}
+          >
+            <TrendingUp
+              className={`h-4 w-4 ${!isIncreasing && "rotate-180"}`}
+            />
+          </div>
+          <div>
+            <p
+              className={`font-bold text-sm ${isIncreasing ? "text-amber-700" : "text-green-700"}`}
             >
-              <TrendingUp
-                className={`h-4 w-4 ${!isIncreasing && "rotate-180"}`}
-              />
-              <span>{Math.abs(difference).toFixed(2)}</span>
-            </div>
+              {isIncreasing ? "Projected Increase" : "Projected Savings"}
+            </p>
+            <p
+              className={`text-xs ${isIncreasing ? "text-amber-600/80" : "text-green-600/80"}`}
+            >
+              Expected to {isIncreasing ? "increase" : "decrease"} by{" "}
+              <span className='font-mono font-bold'>
+                ${Math.abs(difference).toFixed(2)}
+              </span>
+            </p>
           </div>
         </div>
-
-        {trend && (
-          <p className='text-sm text-muted-foreground'>
-            Trend: <span className='font-medium capitalize'>{trend}</span>
-          </p>
-        )}
       </div>
+
+      {trend && (
+        <div className='flex items-center gap-2 text-xs text-gray-500 font-medium'>
+          <span className='w-1.5 h-1.5 rounded-full bg-gray-400'></span>
+          Trend Analysis:{" "}
+          <span className='text-gray-900 capitalize'>{trend}</span>
+        </div>
+      )}
     </div>
   );
 };

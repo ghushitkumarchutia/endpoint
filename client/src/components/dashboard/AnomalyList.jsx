@@ -5,8 +5,12 @@ import { SEVERITY_COLORS } from "../../utils/constants";
 const AnomalyList = ({ anomalies }) => {
   if (!anomalies || anomalies.length === 0) {
     return (
-      <div className='text-center py-6 px-6 text-gray-400 bg-gray-50 rounded-xl border border-dashed border-gray-200 text-sm font-bricolage'>
-        No recent anomalies detected
+      <div className='h-full flex items-center justify-center py-8 px-6'>
+        <div className='text-center p-6 border border-dashed border-gray-200 rounded-2xl bg-gray-50/50 w-full'>
+          <p className='text-sm font-medium text-gray-400'>
+            No recent anomalies detected
+          </p>
+        </div>
       </div>
     );
   }
@@ -16,7 +20,7 @@ const AnomalyList = ({ anomalies }) => {
       {anomalies.map((anomaly) => (
         <div
           key={anomaly._id}
-          className='flex items-start gap-3 p-3 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors'
+          className='flex items-start gap-3 p-3 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors border border-gray-100'
         >
           <div
             className={`p-2 rounded-lg shrink-0 ${
@@ -39,28 +43,23 @@ const AnomalyList = ({ anomalies }) => {
           </div>
           <div className='flex-1 min-w-0'>
             <div className='flex items-center justify-between mb-1'>
-              <h4 className='font-medium text-gray-800 capitalize truncate text-sm'>
+              <h4 className='font-bold text-gray-900 capitalize truncate text-xs'>
                 {anomaly.type.replace(/_/g, " ")}
               </h4>
-              <span className='text-xs text-gray-400 flex items-center gap-1'>
+              <span className='text-[10px] text-gray-400 flex items-center gap-1 bg-white px-1.5 py-0.5 rounded border border-gray-200'>
                 <Clock className='h-3 w-3' />
                 {formatRelativeTime(anomaly.createdAt)}
               </span>
             </div>
             <p className='text-xs text-gray-500'>
               Value:{" "}
-              <span className='font-mono text-gray-700'>
+              <span className='font-mono font-bold text-gray-700'>
                 {anomaly.currentValue}ms
               </span>{" "}
-              <span className='text-gray-400'>
-                (Expected: {anomaly.expectedValue}ms)
+              <span className='text-gray-400 opacity-70'>
+                / Exp: {anomaly.expectedValue}ms
               </span>
             </p>
-            {anomaly.aiInsight && (
-              <div className='text-xs bg-emerald-50 text-emerald-700 p-2 rounded-lg mt-2 border border-emerald-100'>
-                <strong>AI Insight:</strong> {anomaly.aiInsight}
-              </div>
-            )}
           </div>
         </div>
       ))}

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Trash2, Pause, Play, RefreshCw } from "lucide-react";
+import { ArrowLeft, Trash2, Pause, Play } from "lucide-react";
 import { toast } from "react-hot-toast";
 
 import apiService from "../services/apiService";
@@ -10,9 +10,7 @@ import { ROUTES } from "../utils/constants";
 
 import Button from "../components/common/Button";
 import Loader from "../components/common/Loader";
-import ConfidenceBadge from "../components/common/ConfidenceBadge";
 import ResponseTimeChart from "../components/charts/ResponseTimeChart";
-import TrendChart from "../components/charts/TrendChart";
 import StatusPieChart from "../components/charts/StatusPieChart";
 import AnomalyList from "../components/dashboard/AnomalyList";
 import Modal from "../components/common/Modal";
@@ -38,9 +36,9 @@ const ApiDetails = () => {
           request(analyticsService.getAnomalies, id, { limit: 10 }),
         ]);
       setApi(apiData.data);
-      setStats(statsData.data.stats.last24h);
-      setHistory(historyData.data);
-      setAnomalies(anomaliesData.data);
+      setStats(statsData?.data?.stats?.last24h || null);
+      setHistory(historyData?.data || []);
+      setAnomalies(anomaliesData?.data || []);
     } catch (error) {
       console.error(error);
     }
@@ -71,86 +69,133 @@ const ApiDetails = () => {
     }
   };
 
-  if (loading && !api) return <Loader size='lg' />;
+  if (loading && !api) {
+    return (
+      <div className='flex items-center justify-center h-full bg-[#f5f5f6] rounded-3xl'>
+        <Loader size='lg' />
+      </div>
+    );
+  }
+
   if (!api) return <div className='text-center p-8'>API not found</div>;
 
   return (
-    <div className='container mx-auto px-4 py-8 space-y-6'>
-      {/* Header */}
-      <div className='flex flex-col md:flex-row md:items-center justify-between gap-4'>
-        <div>
-          <Button
-            variant='ghost'
-            size='sm'
-            onClick={() => navigate(ROUTES.DASHBOARD)}
-            className='mb-2 pl-0'
-          >
-            <ArrowLeft className='mr-2 h-4 w-4' /> Back
-          </Button>
-          <h1 className='text-3xl font-bold flex items-center gap-3'>
-            {api.name}
-            <span
-              className={`text-xs px-2 py-1 rounded-full border ${api.isActive ? "bg-green-500/10 text-green-500 border-green-500/20" : "bg-yellow-500/10 text-yellow-500 border-yellow-500/20"}`}
-            >
-              {api.isActive ? "Active" : "Paused"}
-            </span>
-          </h1>
-          <p className='text-muted-foreground font-mono mt-1 text-sm bg-muted/30 inline-block px-2 py-1 rounded'>
-            {api.method} {api.url}
-          </p>
-        </div>
+    <div className='flex flex-col px-4 py-[20px] md:px-6 md:py-[22px] bg-[#f5f5f6] rounded-3xl h-full overflow-y-auto custom-scrollbar space-y-6'>
+      {/* Header Section */}
+      <div className='flex flex-col gap-4'>
+        <button
+          onClick={() => navigate(ROUTES.DASHBOARD)}
+          className='flex items-center text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors w-fit'
+        >
+          <ArrowLeft className='mr-1.5 h-4 w-4' /> Back
+        </button>
 
-        <div className='flex items-center gap-2'>
-          <Button variant='outline' onClick={handleToggle}>
-            {api.isActive ? (
-              <Pause className='mr-2 h-4 w-4' />
-            ) : (
-              <Play className='mr-2 h-4 w-4' />
-            )}
-            {api.isActive ? "Pause" : "Resume"}
-          </Button>
-          <Button
-            variant='destructive'
-            size='icon'
-            onClick={() => setIsDeleteModalOpen(true)}
-          >
-            <Trash2 className='h-4 w-4' />
-          </Button>
+        <div className='flex flex-col md:flex-row md:items-start justify-between gap-4'>
+          <div>
+            <div className='flex items-center gap-3 mb-2'>
+              <h1 className='text-3xl font-bold font-dmsans text-gray-900'>
+                {api.name}
+              </h1>
+              <span
+                className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full border border-opacity-20 uppercase tracking-wide ${
+                  api.isActive
+                    ? "bg-green-50 text-green-600 border-green-200"
+                    : "bg-yellow-50 text-yellow-600 border-yellow-200"
+                }`}
+              >
+                {api.isActive ? "Active" : "Paused"}
+              </span>
+            </div>
+            <div className='flex items-center gap-2 font-mono text-sm text-gray-600'>
+              <span className='uppercase font-bold text-gray-800 bg-gray-100 px-1.5 py-0.5 rounded textxs'>
+                {api.method}
+              </span>
+              <span className='truncate max-w-md'>{api.url}</span>
+            </div>
+          </div>
+
+          <div className='flex items-center gap-3'>
+            <button
+              onClick={handleToggle}
+              className='flex flex-col items-center gap-1 group'
+            >
+              <div className='p-2 rounded-lg hover:bg-white hover:shadow-sm border border-transparent hover:border-gray-200 transition-all'>
+                {api.isActive ? (
+                  <Pause className='h-5 w-5 text-gray-400 group-hover:text-gray-700' />
+                ) : (
+                  <Play className='h-5 w-5 text-gray-400 group-hover:text-gray-700' />
+                )}
+              </div>
+              <span className='text-[10px] uppercase font-bold text-gray-400 group-hover:text-gray-600'>
+                {api.isActive ? "Pause" : "Resume"}
+              </span>
+            </button>
+
+            <button
+              onClick={() => setIsDeleteModalOpen(true)}
+              className='flex flex-col items-center gap-1 group'
+            >
+              <div className='p-2 rounded-lg hover:bg-white hover:shadow-sm border border-transparent hover:border-gray-200 transition-all'>
+                <Trash2 className='h-5 w-5 text-gray-400 group-hover:text-red-500' />
+              </div>
+              <span className='text-[10px] uppercase font-bold text-gray-400 group-hover:text-red-500'>
+                Delete
+              </span>
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Charts Row */}
+      {/* Charts Grid */}
       <div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
-        <div className='lg:col-span-2 bg-card border border-border p-6 rounded-xl shadow-sm'>
-          <h3 className='text-lg font-semibold mb-4'>Response Time (24h)</h3>
-          <ResponseTimeChart data={history} />
+        {/* Response Time Chart */}
+        <div className='lg:col-span-2 bg-white border border-gray-200/60 rounded-[20px] p-6 shadow-sm flex flex-col'>
+          <h3 className='text-lg font-bold font-dmsans text-gray-900 mb-6'>
+            Response Time (24h)
+          </h3>
+          <div className='w-full h-[320px]'>
+            <ResponseTimeChart data={history} />
+          </div>
         </div>
 
-        <div className='bg-card border border-border p-6 rounded-xl shadow-sm'>
-          <h3 className='text-lg font-semibold mb-4'>Uptime Ratio</h3>
-          <StatusPieChart
-            stats={{
-              healthyCount: stats?.successCount || 0,
-              warningCount: 0, // Simplified for this view
-              downCount: stats?.errorCount || 0,
-            }}
-          />
+        {/* Uptime Ratio Chart */}
+        <div className='bg-white border border-gray-200/60 rounded-[20px] p-6 shadow-sm flex flex-col'>
+          <h3 className='text-lg font-bold font-dmsans text-gray-900 mb-6'>
+            Uptime Ratio
+          </h3>
+          <div className='flex items-center justify-center h-[220px]'>
+            <StatusPieChart
+              stats={{
+                healthyCount: stats?.successCount || 0,
+                warningCount: 0,
+                downCount: stats?.errorCount || 0,
+              }}
+            />
+          </div>
 
-          <div className='mt-4 space-y-2 text-sm'>
-            <div className='flex justify-between border-b border-border pb-2'>
-              <span className='text-muted-foreground'>Avg Response</span>
-              <span className='font-mono font-medium'>
-                {stats?.avgResponseTime}ms
+          <div className='mt-8 space-y-4'>
+            <div className='flex items-center justify-between border-b border-gray-100 pb-3'>
+              <span className='text-sm font-medium text-gray-500'>
+                Avg Response
+              </span>
+              <span className='font-mono font-bold text-gray-900'>
+                {stats?.avgResponseTime || 0}ms
               </span>
             </div>
-            <div className='flex justify-between border-b border-border pb-2'>
-              <span className='text-muted-foreground'>Est. Uptime</span>
-              <span className='font-mono font-medium'>{stats?.uptime}%</span>
+            <div className='flex items-center justify-between border-b border-gray-100 pb-3'>
+              <span className='text-sm font-medium text-gray-500'>
+                Est. Uptime
+              </span>
+              <span className='font-mono font-bold text-gray-900'>
+                {stats?.uptime || 100}%
+              </span>
             </div>
-            <div className='flex justify-between'>
-              <span className='text-muted-foreground'>Total Checks</span>
-              <span className='font-mono font-medium'>
-                {stats?.totalChecks}
+            <div className='flex items-center justify-between'>
+              <span className='text-sm font-medium text-gray-500'>
+                Total Checks
+              </span>
+              <span className='font-mono font-bold text-gray-900'>
+                {stats?.totalChecks || 0}
               </span>
             </div>
           </div>
@@ -158,8 +203,8 @@ const ApiDetails = () => {
       </div>
 
       {/* Anomalies Section */}
-      <div className='bg-card border border-border p-6 rounded-xl shadow-sm'>
-        <h3 className='text-lg font-semibold mb-4'>
+      <div className='bg-white border border-gray-200/60 rounded-[20px] p-6 shadow-sm'>
+        <h3 className='text-lg font-bold font-dmsans text-gray-900 mb-6'>
           Recent Anomalies & Insights
         </h3>
         <AnomalyList anomalies={anomalies} />

@@ -3,7 +3,6 @@ import {
   Line,
   XAxis,
   YAxis,
-  CartesianGrid,
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
@@ -12,21 +11,11 @@ import { format } from "date-fns";
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
-      <div className='bg-popover border border-border p-3 rounded-lg shadow-lg'>
-        <p className='text-sm font-medium text-popover-foreground mb-2'>
+      <div className='bg-white border border-gray-100 p-3 rounded-lg shadow-xl'>
+        <p className='text-xs font-bold text-gray-500 mb-1'>
           {format(new Date(label), "MMM d, HH:mm")}
         </p>
-        <p className='text-sm text-primary'>
-          Time:{" "}
-          <span className='font-mono font-bold'>{payload[0].value}ms</span>
-        </p>
-        <p
-          className={`text-xs mt-1 ${
-            payload[0].payload.success ? "text-green-500" : "text-red-500"
-          }`}
-        >
-          {payload[0].payload.success ? "Success" : "Failed"}
-        </p>
+        <p className='text-sm font-bold text-gray-900'>{payload[0].value}ms</p>
       </div>
     );
   }
@@ -36,48 +25,49 @@ const CustomTooltip = ({ active, payload, label }) => {
 const ResponseTimeChart = ({ data }) => {
   if (!data || data.length === 0) {
     return (
-      <div className='h-[300px] flex items-center justify-center text-muted-foreground bg-muted/20 rounded-xl border border-dashed border-border'>
-        No data available for the selected period
+      <div className='h-full flex items-center justify-center text-gray-400 bg-gray-50/50 rounded-xl border border-dashed border-gray-200 text-sm'>
+        No data available
       </div>
     );
   }
 
   return (
-    <div className='h-[300px] w-full'>
+    <div className='h-full w-full min-h-[300px]'>
       <ResponsiveContainer width='100%' height='100%'>
-        <LineChart data={data}>
-          <CartesianGrid
-            strokeDasharray='3 3'
-            stroke='var(--border)'
-            vertical={false}
-          />
+        <LineChart
+          data={data}
+          margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+        >
           <XAxis
             dataKey='timestamp'
             tickFormatter={(str) => format(new Date(str), "HH:mm")}
-            stroke='var(--muted-foreground)'
-            fontSize={12}
+            stroke='#9ca3af'
+            fontSize={10}
             tickLine={false}
             axisLine={false}
+            dy={10}
+            minTickGap={30}
           />
           <YAxis
-            stroke='var(--muted-foreground)'
-            fontSize={12}
+            stroke='#9ca3af'
+            fontSize={10}
             tickLine={false}
             axisLine={false}
-            unit='ms'
+            tickFormatter={(v) => `${v}ms`}
+            dx={-5}
           />
           <Tooltip
             content={<CustomTooltip />}
-            cursor={{ stroke: "var(--border)" }}
+            cursor={{ stroke: "#e5e7eb", strokeWidth: 1 }}
           />
           <Line
             type='monotone'
             dataKey='responseTime'
-            stroke='var(--primary)'
-            strokeWidth={2}
+            stroke='#14412B'
+            strokeWidth={1.5}
             dot={false}
-            activeDot={{ r: 6, fill: "var(--primary)" }}
-            animationDuration={1000}
+            activeDot={{ r: 4, fill: "#14412B", strokeWidth: 0 }}
+            animationDuration={800}
           />
         </LineChart>
       </ResponsiveContainer>

@@ -12,7 +12,7 @@ const QueryResult = ({ result, onFeedback }) => {
       </div>
 
       <div className='flex-1 max-w-full'>
-        <div className='bg-white border border-gray-200 rounded-[20px] rounded-tl-sm p-4 md:p-5 shadow-sm'>
+        <div className='bg-white border text-black border-gray-200 rounded-[20px] rounded-tl-sm p-4 md:p-5 shadow-sm'>
           {parsedIntent && (
             <div className='flex items-center gap-2 mb-3'>
               <div className='flex items-center gap-1.5 px-2 py-1 bg-[#14412B]/5 border border-[#14412B]/10 rounded-md'>
