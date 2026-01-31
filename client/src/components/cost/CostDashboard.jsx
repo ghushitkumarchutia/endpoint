@@ -16,7 +16,21 @@ const CostDashboard = ({ data, onApiClick }) => {
     );
   }
 
-  const { totalCost = 0, budget = 0, apis = [], trend = 0 } = data;
+  const {
+    totalCost = 0,
+    budget = 0,
+    apis = [],
+    trend = 0,
+    currency = data.currency || data.config?.currency || "USD",
+  } = data;
+
+  const formatCurrency = (val) => {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: currency,
+      minimumFractionDigits: 2,
+    }).format(val);
+  };
 
   return (
     <div className='space-y-6'>
@@ -28,7 +42,7 @@ const CostDashboard = ({ data, onApiClick }) => {
             </span>
             <DollarSign className='h-4 w-4 text-muted-foreground' />
           </div>
-          <p className='text-2xl font-bold'>${totalCost.toFixed(2)}</p>
+          <p className='text-2xl font-bold'>{formatCurrency(totalCost)}</p>
           <div className='flex items-center gap-1 mt-1 text-xs'>
             {trend >= 0 ? (
               <TrendingUp className='h-3 w-3 text-red-500' />
@@ -46,7 +60,7 @@ const CostDashboard = ({ data, onApiClick }) => {
             <span className='text-sm text-muted-foreground'>Budget</span>
             <AlertCircle className='h-4 w-4 text-muted-foreground' />
           </div>
-          <BudgetProgress used={totalCost} total={budget} />
+          <BudgetProgress used={totalCost} total={budget} currency={currency} />
         </div>
 
         <div className='bg-card border border-border rounded-xl p-4'>
@@ -68,6 +82,7 @@ const CostDashboard = ({ data, onApiClick }) => {
               <CostCard
                 key={api._id || api.apiId}
                 api={api}
+                currency={currency}
                 onClick={() => onApiClick && onApiClick(api)}
               />
             ))}

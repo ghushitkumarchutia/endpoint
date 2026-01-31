@@ -1,10 +1,18 @@
-const BudgetProgress = ({ used = 0, total = 0, label }) => {
+const BudgetProgress = ({ used = 0, total = 0, label, currency = "USD" }) => {
   const safeUsed = Number(used) || 0;
   const safeTotal = Number(total) || 0;
   const percentage =
     safeTotal > 0 ? Math.min(Math.round((safeUsed / safeTotal) * 100), 100) : 0;
   const isWarning = percentage > 80;
   const isDanger = percentage >= 100;
+
+  const formatCurrency = (val) => {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: currency,
+      minimumFractionDigits: 2,
+    }).format(val);
+  };
 
   return (
     <div className='space-y-4'>
@@ -15,10 +23,10 @@ const BudgetProgress = ({ used = 0, total = 0, label }) => {
           </span>
           <div className='text-right'>
             <span className='font-bold text-gray-900 font-mono text-lg'>
-              ${safeUsed.toFixed(2)}
+              {formatCurrency(safeUsed)}
             </span>
             <span className='text-gray-400 text-sm ml-1 font-medium'>
-              / ${safeTotal.toFixed(2)}
+              / {formatCurrency(safeTotal)}
             </span>
           </div>
         </div>

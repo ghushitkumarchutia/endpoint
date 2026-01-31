@@ -1,10 +1,23 @@
 import { TrendingUp, Calendar, ArrowRight } from "lucide-react";
 
-const CostProjection = ({ currentCost = 0, projectedCost = 0, trend }) => {
+const CostProjection = ({
+  currentCost = 0,
+  projectedCost = 0,
+  trend,
+  currency = "USD",
+}) => {
   const safeCurrent = Number(currentCost) || 0;
   const safeProjected = Number(projectedCost) || 0;
   const difference = safeProjected - safeCurrent;
   const isIncreasing = difference > 0;
+
+  const formatCurrency = (val) => {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: currency,
+      minimumFractionDigits: 2,
+    }).format(val);
+  };
 
   return (
     <div className='space-y-5'>
@@ -14,13 +27,13 @@ const CostProjection = ({ currentCost = 0, projectedCost = 0, trend }) => {
         </span>
         <div className='flex items-center gap-3'>
           <span className='text-3xl font-bold font-dmsans text-gray-900'>
-            ${safeCurrent.toFixed(2)}
+            {formatCurrency(safeCurrent)}
           </span>
           <span className='text-gray-300'>
             <ArrowRight className='h-5 w-5' />
           </span>
           <span className='text-3xl font-bold font-dmsans text-gray-400'>
-            ${safeProjected.toFixed(2)}
+            {formatCurrency(safeProjected)}
           </span>
         </div>
         <span className='text-[10px] font-bold text-gray-400 uppercase tracking-wider mt-1'>
@@ -50,7 +63,7 @@ const CostProjection = ({ currentCost = 0, projectedCost = 0, trend }) => {
             >
               Expected to {isIncreasing ? "increase" : "decrease"} by{" "}
               <span className='font-mono font-bold'>
-                ${Math.abs(difference).toFixed(2)}
+                {formatCurrency(Math.abs(difference))}
               </span>
             </p>
           </div>

@@ -2,7 +2,9 @@ import api from "./api";
 
 const costService = {
   getDashboard: async (params = {}) => {
-    const response = await api.get("/costs/dashboard", { params });
+    // Add cache buster to prevent browser caching of stale config
+    const safeParams = { ...params, _t: new Date().getTime() };
+    const response = await api.get("/costs/dashboard", { params: safeParams });
     return response.data;
   },
 
@@ -18,6 +20,11 @@ const costService = {
 
   updateConfig: async (apiId, config) => {
     const response = await api.put(`/costs/api/${apiId}/config`, config);
+    return response.data;
+  },
+
+  updateGlobalConfig: async (config) => {
+    const response = await api.put("/costs/config", config);
     return response.data;
   },
 };

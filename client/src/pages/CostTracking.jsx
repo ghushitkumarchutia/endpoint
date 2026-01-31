@@ -16,29 +16,64 @@ import Loader from "../components/common/Loader";
 import toast from "react-hot-toast";
 
 const CostTracking = () => {
+  const { dashboard, loading, error, fetchDashboard, updateGlobalConfig } =
+    useCosts();
+
   const [period, setPeriod] = useState("month");
   const [showConfig, setShowConfig] = useState(false);
-  const [config, setConfig] = useState({ budget: 0, alertThreshold: 80 });
+  const [config, setConfig] = useState({
+    budget: 0,
+    alertThreshold: 80,
+    currency: "USD",
+  });
 
-  const { dashboard, loading, error, fetchDashboard, updateConfig } =
-    useCosts();
+  // Determine the effective currency for display immediately (No Flash of USD)
+  // 1. If editing, show what's in the form (config.currency)
+  // 2. If viewing, show the authoritative server truth (dashboard.config.currency)
+  // 3. Fallback to defaults
+  const activeCurrency = showConfig
+    ? config.currency
+    : dashboard?.config?.currency || config.currency || "USD";
+
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: activeCurrency,
+      minimumFractionDigits: 2,
+    }).format(amount);
+  };
 
   useEffect(() => {
     fetchDashboard(period);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [period]);
 
-  // Sync config from dashboard when it loads
   useEffect(() => {
     if (dashboard?.config) {
-      setConfig(dashboard.config);
+      // Ensure we don't overwrite with undefined values
+      setConfig((prev) => ({
+        ...prev,
+        ...dashboard.config,
+        // Fallback to existing or default if missing from server (safety net)
+        currency: dashboard.config.currency || prev.currency || "USD",
+      }));
     }
   }, [dashboard]);
 
   const handleConfigSave = async () => {
     try {
-      await updateConfig(config);
+      const response = await updateGlobalConfig(config);
       toast.success("Configuration saved");
+
+      // Immediate authoritative update from the save response
+      if (response && response.data) {
+        const newConfig = response.data;
+        setConfig(newConfig);
+        // Update the dashboard object in useCosts hook would be ideal,
+        // but since we can't access setDashboard directly, we refetch.
+        // However, the local config state is now visually correct immediately.
+      }
+
       setShowConfig(false);
       fetchDashboard(period);
     } catch {
@@ -46,11 +81,12 @@ const CostTracking = () => {
     }
   };
 
-  // Suppress specific network errors
   const displayError =
     error === "Network error" || error === "Request cancelled" ? null : error;
 
-  if (loading && !dashboard) {
+  const isInitializing = !dashboard && !error;
+
+  if (isInitializing) {
     return (
       <div className='flex items-center justify-center h-full bg-[#f5f5f6] rounded-3xl'>
         <Loader size='lg' />
@@ -128,6 +164,27 @@ const CostTracking = () => {
             </div>
             <div>
               <label className='text-xs font-bold text-gray-500 uppercase tracking-wide block mb-2'>
+                Currency
+              </label>
+              <div className='relative'>
+                <select
+                  value={config.currency}
+                  onChange={(e) =>
+                    setConfig({ ...config, currency: e.target.value })
+                  }
+                  className='w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-mono text-gray-900 appearance-none'
+                >
+                  <option value='USD'>USD ($)</option>
+                  <option value='INR'>INR (₹)</option>
+                  <option value='EUR'>EUR (€)</option>
+                  <option value='GBP'>GBP (£)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mt-6'>
+            <div>
+              <label className='text-xs font-bold text-gray-500 uppercase tracking-wide block mb-2'>
                 Alert Threshold (%)
               </label>
               <div className='relative'>
@@ -176,7 +233,7 @@ const CostTracking = () => {
                 Total Cost
               </p>
               <p className='text-3xl font-bold font-dmsans text-gray-900 leading-none mt-1'>
-                ${(dashboard?.totalCost || 0).toFixed(2)}
+                {formatCurrency(dashboard?.totalCost || 0)}
               </p>
             </div>
           </div>
@@ -195,7 +252,7 @@ const CostTracking = () => {
                 Projected Cost
               </p>
               <p className='text-3xl font-bold font-dmsans text-gray-900 leading-none mt-1'>
-                ${(dashboard?.projectedCost || 0).toFixed(2)}
+                {formatCurrency(dashboard?.projectedCost || 0)}
               </p>
             </div>
           </div>
@@ -222,7 +279,7 @@ const CostTracking = () => {
               <p
                 className={`text-3xl font-bold font-dmsans leading-none mt-1 ${dashboard?.overages > 0 ? "text-red-600" : "text-gray-900"}`}
               >
-                ${(dashboard?.overages || 0).toFixed(2)}
+                {formatCurrency(dashboard?.overages || 0)}
               </p>
             </div>
           </div>
@@ -238,6 +295,7 @@ const CostTracking = () => {
             used={dashboard?.totalCost || 0}
             total={dashboard?.config?.budget || 0}
             label='Monthly Budget'
+            currency={activeCurrency}
           />
         </div>
 
@@ -249,6 +307,7 @@ const CostTracking = () => {
             currentCost={dashboard?.totalCost || 0}
             projectedCost={dashboard?.projectedCost || 0}
             trend={dashboard?.costTrend}
+            currency={activeCurrency}
           />
         </div>
       </div>
@@ -285,7 +344,7 @@ const CostTracking = () => {
                   </div>
                 </div>
                 <span className='font-bold text-gray-900 font-mono text-lg'>
-                  ${api.cost?.toFixed(2) || "0.00"}
+                  {formatCurrency(api.cost || 0)}
                 </span>
               </div>
             ))}

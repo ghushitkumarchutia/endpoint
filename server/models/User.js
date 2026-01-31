@@ -34,6 +34,21 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  costSettings: {
+    monthlyBudget: {
+      type: Number,
+      default: 0,
+    },
+    alertThreshold: {
+      type: Number,
+      default: 80,
+    },
+    currency: {
+      type: String,
+      default: "USD",
+      enum: ["USD", "INR", "EUR", "GBP"],
+    },
+  },
 });
 
 userSchema.pre("save", async function () {

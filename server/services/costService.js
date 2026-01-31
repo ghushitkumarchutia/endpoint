@@ -1,6 +1,7 @@
 const CostRecord = require("../models/CostRecord");
 const Api = require("../models/Api");
 const Notification = require("../models/Notification");
+const User = require("../models/User");
 
 const calculateRequestCost = (api, check) => {
   if (!api.costTracking || !api.costTracking.enabled) return 0;
@@ -53,6 +54,11 @@ const checkBudgetThreshold = async (api, userId) => {
   const threshold = api.costTracking.alertThreshold || 80;
   const percentUsed = (totalCost / api.costTracking.monthlyBudget) * 100;
   if (percentUsed >= threshold) {
+    const user = await User.findById(userId).select("costSettings.currency");
+    const currency = user?.costSettings?.currency || "USD";
+    const currencySymbols = { USD: "$", INR: "₹", EUR: "€", GBP: "£" };
+    const symbol = currencySymbols[currency] || "$";
+
     const existingAlert = await Notification.findOne({
       userId,
       type: "cost_alert",
@@ -64,7 +70,7 @@ const checkBudgetThreshold = async (api, userId) => {
       await Notification.create({
         userId,
         type: "cost_alert",
-        message: `API "${api.name}" has reached ${percentUsed.toFixed(1)}% of monthly budget ($${totalCost.toFixed(2)}/$${api.costTracking.monthlyBudget})`,
+        message: `API "${api.name}" has reached ${percentUsed.toFixed(1)}% of monthly budget (${symbol}${totalCost.toFixed(2)}/${symbol}${api.costTracking.monthlyBudget})`,
         metadata: {
           apiId: api._id,
           severity: percentUsed >= 100 ? "critical" : "high",
@@ -185,9 +191,72 @@ const getMonthlyProjection = async (userId, apiId = null) => {
   };
 };
 
+const generateOptimizationTips = (
+  analytics,
+  costSettings,
+  projection = null,
+) => {
+  const tips = [];
+  const { summary, byApi } = analytics;
+  const budget = costSettings?.monthlyBudget || 0;
+  const currency = costSettings?.currency || "USD";
+
+  const currencySymbols = {
+    USD: "$",
+    INR: "₹",
+    EUR: "€",
+    GBP: "£",
+  };
+  const symbol = currencySymbols[currency] || "$";
+
+  if (budget > 0) {
+    if (summary.totalCost > budget) {
+      tips.push({
+        type: "critical",
+        title: "Budget Exceeded",
+        message: `You've exceeded your monthly budget of ${symbol}${budget}. Review your costliest APIs.`,
+      });
+    } else if (
+      projection &&
+      projection.projectedMonthlyTotal > budget &&
+      summary.totalCost < budget
+    ) {
+      tips.push({
+        type: "warning",
+        title: "Projected Overrun",
+        message: `At current usage, you are projected to exceed your budget by ${symbol}${(
+          projection.projectedMonthlyTotal - budget
+        ).toFixed(2)}.`,
+      });
+    }
+  }
+
+  if (byApi.length > 0) {
+    const expensiveApi = byApi.find((api) => api.avgCostPerRequest > 0.05);
+    if (expensiveApi) {
+      tips.push({
+        type: "info",
+        title: "High Cost per Request",
+        message: `API "${expensiveApi.apiName}" averages ${symbol}${expensiveApi.avgCostPerRequest.toFixed(4)} per request. Consider optimizing payload size or caching.`,
+      });
+    }
+  }
+
+  if (tips.length === 0) {
+    tips.push({
+      type: "success",
+      title: "On Track",
+      message: "Your API spending is within optimal limits. Good job!",
+    });
+  }
+
+  return tips;
+};
+
 module.exports = {
   calculateRequestCost,
   recordCost,
   getCostAnalytics,
   getMonthlyProjection,
+  generateOptimizationTips,
 };

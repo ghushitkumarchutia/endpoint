@@ -14,6 +14,26 @@ router.use(protect);
 
 router.get("/dashboard", getCostDashboard);
 
+router.put(
+  "/config",
+  [
+    body("budget")
+      .optional()
+      .isFloat({ min: 0 })
+      .withMessage("Budget must be positive"),
+    body("alertThreshold")
+      .optional()
+      .isFloat({ min: 0, max: 100 })
+      .withMessage("Threshold must be 0-100"),
+    body("currency")
+      .optional()
+      .isIn(["USD", "INR", "EUR", "GBP"])
+      .withMessage("Invalid currency"),
+  ],
+  validate,
+  require("../controllers/costController").updateGlobalCostConfig,
+);
+
 router.get(
   "/records",
   [

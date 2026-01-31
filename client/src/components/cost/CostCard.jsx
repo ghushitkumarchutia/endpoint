@@ -1,9 +1,17 @@
 import { DollarSign, TrendingUp, TrendingDown } from "lucide-react";
 
-const CostCard = ({ api, onClick }) => {
+const CostCard = ({ api, onClick, currency = "USD" }) => {
   if (!api) return null;
   const { apiName, cost = 0, trend = 0, budget } = api;
   const safeCost = Number(cost) || 0;
+
+  const formatCurrency = (val) => {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: currency,
+      minimumFractionDigits: 2,
+    }).format(val);
+  };
   const percentUsed = budget ? Math.round((safeCost / budget) * 100) : 0;
   const isOverBudget = percentUsed > 100;
 
@@ -28,9 +36,11 @@ const CostCard = ({ api, onClick }) => {
 
       <div className='flex items-baseline gap-1 mb-3'>
         <DollarSign className='h-4 w-4 text-muted-foreground' />
-        <span className='text-2xl font-bold'>{safeCost.toFixed(2)}</span>
+        <span className='text-2xl font-bold'>{formatCurrency(safeCost)}</span>
         {budget && (
-          <span className='text-muted-foreground text-sm'>/ ${budget}</span>
+          <span className='text-muted-foreground text-sm'>
+            / {formatCurrency(budget)}
+          </span>
         )}
       </div>
 

@@ -129,9 +129,9 @@ const Dashboard = () => {
             value={stats.totalApis}
             icon={Monitor}
             description='Active endpoints'
-            className='p-5 rounded-[20px] bg-[#14412B] text-white shadow-sm'
+            className='p-5 rounded-[24px] bg-[#14412B] text-white shadow-sm'
             iconClassName='p-2 bg-white/20 rounded-xl text-white'
-            titleClassName='text-sm font-medium text-emerald-100/90'
+            titleClassName='text-xl font-dmsans text-emerald-100/90'
             valueClassName='text-4xl font-bold font-dmsans mt-4 mb-1'
             descriptionClassName='text-xs text-emerald-200/80 font-medium'
           />
@@ -166,7 +166,7 @@ const Dashboard = () => {
             icon={Bell}
             description='Unacknowledged'
             className='p-5 rounded-[20px] bg-white border border-gray-200/60 shadow-sm'
-            iconClassName='p-2 bg-amber-50 rounded-xl text-amber-500'
+            iconClassName='p-2 bg-amber-50 rounded-md text-amber-500'
             titleClassName='text-sm font-medium text-gray-500'
             valueClassName='text-4xl font-bold font-dmsans text-amber-600 mt-4 mb-1'
             descriptionClassName='text-xs text-amber-500 font-medium'

@@ -1,38 +1,120 @@
 const {
   getCostAnalytics,
   getMonthlyProjection,
+  generateOptimizationTips,
 } = require("../services/costService");
 const Api = require("../models/Api");
 const CostRecord = require("../models/CostRecord");
+const User = require("../models/User");
 const mongoose = require("mongoose");
-const { getOrSet, CACHE_TTL } = require("../utils/cache");
 
 const getCostDashboard = async (req, res, next) => {
   try {
     const { startDate, endDate, groupBy } = req.query;
+    const userId = req.user._id;
 
-    // Cache cost dashboard for 5 minutes
-    const cacheKey = `cost_dashboard_${req.user._id}_${startDate || ""}_${endDate || ""}_${groupBy || ""}`;
-    const data = await getOrSet(
-      cacheKey,
-      async () => {
-        const analytics = await getCostAnalytics(req.user._id, {
-          startDate,
-          endDate,
-          groupBy,
-        });
-        const projection = await getMonthlyProjection(req.user._id);
-        return {
-          analytics,
-          projection,
-        };
-      },
-      CACHE_TTL.MEDIUM,
+    // Use lean() to get a plain JavaScript object
+    const user = await User.findById(userId).lean();
+
+    const costSettings = {
+      monthlyBudget: user?.costSettings?.monthlyBudget || 0,
+      alertThreshold: user?.costSettings?.alertThreshold || 80,
+      currency: user?.costSettings?.currency || "USD",
+    };
+
+    const [analytics, projection] = await Promise.all([
+      getCostAnalytics(userId, { startDate, endDate, groupBy }),
+      getMonthlyProjection(userId),
+    ]);
+
+    const totalCost = analytics.summary.totalCost || 0;
+    const projectedCost = projection.projectedMonthlyTotal || 0;
+    const budget = costSettings.monthlyBudget || 0;
+
+    const overages = budget > 0 && totalCost > budget ? totalCost - budget : 0;
+
+    const costTrend =
+      totalCost > 0
+        ? projectedCost > totalCost
+          ? "increasing"
+          : "stable"
+        : "neutral";
+
+    const topCostApis = analytics.byApi.map((api) => ({
+      apiId: api.apiId,
+      name: api.apiName,
+      requests: api.requests,
+      cost: api.totalCost,
+    }));
+
+    const costByApi = analytics.byApi.map((api) => ({
+      name: api.apiName,
+      value: api.totalCost,
+    }));
+
+    const optimizationTips = generateOptimizationTips(
+      analytics,
+      costSettings,
+      projection,
     );
+
+    // Construct the flat dashboard object the frontend expects
+    const dashboardData = {
+      totalCost,
+      projectedCost,
+      overages,
+      costTrend,
+      config: {
+        budget: costSettings.monthlyBudget,
+        alertThreshold: costSettings.alertThreshold,
+        currency: costSettings.currency || "USD",
+      },
+      topCostApis,
+      costByApi,
+      optimizationTips,
+      lastUpdated: new Date(),
+    };
 
     res.json({
       success: true,
-      data,
+      data: dashboardData,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const updateGlobalCostConfig = async (req, res, next) => {
+  try {
+    const { budget, alertThreshold, currency } = req.body;
+
+    const update = {};
+    if (budget !== undefined) update["costSettings.monthlyBudget"] = budget;
+    if (alertThreshold !== undefined)
+      update["costSettings.alertThreshold"] = alertThreshold;
+    if (currency !== undefined) update["costSettings.currency"] = currency;
+
+    // Use findByIdAndUpdate for atomic update
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      { $set: update },
+      { new: true, runValidators: true },
+    );
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    res.json({
+      success: true,
+      message: "Cost configuration updated",
+      data: {
+        budget: user.costSettings.monthlyBudget,
+        alertThreshold: user.costSettings.alertThreshold,
+        currency: user.costSettings.currency,
+      },
     });
   } catch (error) {
     next(error);
@@ -151,6 +233,7 @@ const getCostRecords = async (req, res, next) => {
 
 module.exports = {
   getCostDashboard,
+  updateGlobalCostConfig,
   getApiCosts,
   updateCostConfig,
   getCostRecords,
