@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 import contractService from "../services/contractService";
 
 const useContracts = () => {
-  const [violations, setViolations] = useState([]);
+  const [violations, setViolations] = useState(null);
   const [stats, setStats] = useState(null);
   const [pagination, setPagination] = useState(null);
   const [loading, setLoading] = useState(false);

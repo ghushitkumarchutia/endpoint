@@ -2,16 +2,11 @@ const Ajv = require("ajv");
 const ContractViolation = require("../models/ContractViolation");
 const { analyzeContractViolation } = require("./aiService");
 
-// Create a single ajv instance with caching
 const ajv = new Ajv({ allErrors: true, strict: false, cache: true });
 
-// Schema validation cache to avoid recompiling
 const schemaCache = new Map();
 const MAX_SCHEMA_CACHE_SIZE = 100;
 
-/**
- * Get or compile schema with caching
- */
 const getCompiledSchema = (schema) => {
   const schemaKey = JSON.stringify(schema);
 
@@ -19,7 +14,6 @@ const getCompiledSchema = (schema) => {
     return schemaCache.get(schemaKey);
   }
 
-  // Evict oldest entry if cache is full
   if (schemaCache.size >= MAX_SCHEMA_CACHE_SIZE) {
     const firstKey = schemaCache.keys().next().value;
     schemaCache.delete(firstKey);
@@ -76,6 +70,25 @@ const validateContract = async (api, check) => {
     violations,
     aiExplanation,
   });
+
+  // Create notification for the violation
+  const Notification = require("../models/Notification");
+  await Notification.create({
+    userId: api.userId,
+    type: "CONTRACT_VIOLATION",
+    message: `Contract violation detected on API "${api.name}"`,
+    metadata: {
+      apiId: api._id,
+      violationId: contractViolation._id,
+      violationCount: violations.length,
+      severity: violations.some(
+        (v) => v.severity === "critical" || v.severity === "high",
+      )
+        ? "high"
+        : "medium",
+    },
+  });
+
   return contractViolation;
 };
 

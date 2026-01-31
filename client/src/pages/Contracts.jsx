@@ -51,7 +51,11 @@ const Contracts = () => {
   // Suppress "Request cancelled" error
   const displayError = error === "Request cancelled" ? null : error;
 
-  if (loading && !violations) {
+  // derived loading state:
+  // If we have no data and no error, we are initializing.
+  const isInitializing = !violations && !error;
+
+  if (isInitializing) {
     return (
       <div className='flex items-center justify-center h-full bg-[#f5f5f6] rounded-3xl'>
         <Loader size='lg' />
