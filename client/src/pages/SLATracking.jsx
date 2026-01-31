@@ -1,18 +1,8 @@
 import { useState, useEffect } from "react";
-import {
-  FileText,
-  Download,
-  RefreshCw,
-  Calendar,
-  Settings,
-} from "lucide-react";
+import { FileText, Settings, MoreVertical } from "lucide-react";
 import useSLA from "../hooks/useSLA";
-import SLACard from "../components/sla/SLACard";
 import SLADashboard from "../components/sla/SLADashboard";
 import SLAHistory from "../components/sla/SLAHistory";
-import SLABadge from "../components/sla/SLABadge";
-import SLAGaugeChart from "../components/charts/SLAGaugeChart";
-import SLAForm from "../components/forms/SLAForm";
 import Loader from "../components/common/Loader";
 import toast from "react-hot-toast";
 
@@ -77,45 +67,53 @@ const SLATracking = () => {
     }
   };
 
+  // Suppress "Request cancelled" error
+  const displayError = error === "Request cancelled" ? null : error;
+
   if (loading && !dashboard) {
     return (
-      <div className='flex items-center justify-center h-64'>
+      <div className='flex items-center justify-center h-full bg-[#f5f5f6] rounded-3xl'>
         <Loader size='lg' />
       </div>
     );
   }
 
   return (
-    <div className='space-y-6'>
-      <div className='flex items-center justify-between'>
+    <div className='flex flex-col px-4 py-[20px] md:px-6 md:py-[22px] bg-[#f5f5f6] rounded-3xl h-full overflow-y-auto custom-scrollbar'>
+      <div className='flex items-center justify-between mb-8 shrink-0'>
         <div>
-          <h1 className='text-2xl font-bold'>SLA Tracking</h1>
-          <p className='text-muted-foreground'>
+          <h1 className='text-2xl font-bold font-dmsans text-gray-900'>
+            SLA Tracking
+          </h1>
+          <p className='text-sm text-gray-500 mt-1 font-medium font-bricolage'>
             Monitor service level agreements and compliance
           </p>
         </div>
         <div className='flex items-center gap-3'>
-          <select
-            value={period}
-            onChange={(e) => setPeriod(e.target.value)}
-            className='px-3 py-2 bg-muted border border-border rounded-lg text-sm'
-          >
-            {Object.values(SLA_PERIOD_TYPES).map((p) => (
-              <option key={p} value={p}>
-                {p.charAt(0).toUpperCase() + p.slice(1)}
-              </option>
-            ))}
-          </select>
+          <div className='bg-white border border-gray-200/60 rounded-xl px-4 py-2 shadow-sm'>
+            <select
+              value={period}
+              onChange={(e) => setPeriod(e.target.value)}
+              className='bg-transparent border-none text-sm text-gray-700 font-medium focus:outline-none cursor-pointer'
+            >
+              {Object.values(SLA_PERIOD_TYPES).map((p) => (
+                <option key={p} value={p}>
+                  {p.charAt(0).toUpperCase() + p.slice(1)}
+                </option>
+              ))}
+            </select>
+          </div>
+
           <button
             onClick={handleGenerateReport}
-            className='flex items-center gap-2 px-3 py-2 bg-primary text-primary-foreground rounded-lg text-sm hover:bg-primary/90 transition-colors'
+            className='flex items-center gap-2 px-4 py-2 bg-white border border-gray-200/60 text-gray-700 font-medium rounded-xl text-sm hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm'
           >
             <FileText className='h-4 w-4' />
             Generate Report
           </button>
           <button
             onClick={() => setShowConfig(!showConfig)}
-            className='p-2 bg-muted hover:bg-muted/80 rounded-lg transition-colors'
+            className={`p-2 rounded-xl transition-all shadow-sm border ${showConfig ? "bg-blue-50 text-blue-600 border-blue-100" : "bg-white text-gray-500 border-gray-200/60 hover:text-gray-900 hover:border-gray-300"}`}
           >
             <Settings className='h-5 w-5' />
           </button>
@@ -123,164 +121,117 @@ const SLATracking = () => {
       </div>
 
       {showConfig && (
-        <div className='p-4 bg-card border border-border rounded-xl space-y-4'>
-          <h3 className='font-semibold'>SLA Targets</h3>
-          <div className='grid grid-cols-3 gap-4'>
-            <div>
-              <label className='text-sm text-muted-foreground block mb-1'>
-                Uptime Target (%)
-              </label>
-              <input
-                type='number'
-                step='0.1'
-                value={config.uptimeTarget}
-                onChange={(e) =>
-                  setConfig({ ...config, uptimeTarget: Number(e.target.value) })
-                }
-                className='w-full px-3 py-2 bg-muted border border-border rounded-lg'
-              />
-            </div>
-            <div>
-              <label className='text-sm text-muted-foreground block mb-1'>
-                Latency Target (ms)
-              </label>
-              <input
-                type='number'
-                value={config.latencyTarget}
-                onChange={(e) =>
-                  setConfig({
-                    ...config,
-                    latencyTarget: Number(e.target.value),
-                  })
-                }
-                className='w-full px-3 py-2 bg-muted border border-border rounded-lg'
-              />
-            </div>
-            <div>
-              <label className='text-sm text-muted-foreground block mb-1'>
-                Error Rate Target (%)
-              </label>
-              <input
-                type='number'
-                step='0.1'
-                value={config.errorRateTarget}
-                onChange={(e) =>
-                  setConfig({
-                    ...config,
-                    errorRateTarget: Number(e.target.value),
-                  })
-                }
-                className='w-full px-3 py-2 bg-muted border border-border rounded-lg'
-              />
-            </div>
-          </div>
-          <div className='flex justify-end gap-2'>
+        <div className='p-6 bg-white border border-gray-200/60 rounded-[20px] shadow-sm mb-6 animate-fade-in'>
+          <div className='flex items-center justify-between mb-4'>
+            <h3 className='font-bold text-gray-900 font-dmsans'>
+              Global SLA Configuration
+            </h3>
             <button
               onClick={() => setShowConfig(false)}
-              className='px-4 py-2 text-sm bg-muted hover:bg-muted/80 rounded-lg transition-colors'
+              className='text-gray-400 hover:text-gray-600'
+            >
+              <MoreVertical className='h-4 w-4' />
+            </button>
+          </div>
+
+          <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
+            <div>
+              <label className='text-xs font-bold text-gray-500 uppercase tracking-wide block mb-2'>
+                Uptime Target (%)
+              </label>
+              <div className='relative'>
+                <input
+                  type='number'
+                  step='0.1'
+                  value={config.uptimeTarget}
+                  onChange={(e) =>
+                    setConfig({
+                      ...config,
+                      uptimeTarget: Number(e.target.value),
+                    })
+                  }
+                  className='w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-mono text-gray-900'
+                />
+              </div>
+            </div>
+            <div>
+              <label className='text-xs font-bold text-gray-500 uppercase tracking-wide block mb-2'>
+                Latency Target (ms)
+              </label>
+              <div className='relative'>
+                <input
+                  type='number'
+                  value={config.latencyTarget}
+                  onChange={(e) =>
+                    setConfig({
+                      ...config,
+                      latencyTarget: Number(e.target.value),
+                    })
+                  }
+                  className='w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-mono text-gray-900'
+                />
+              </div>
+            </div>
+            <div>
+              <label className='text-xs font-bold text-gray-500 uppercase tracking-wide block mb-2'>
+                Error Rate Target (%)
+              </label>
+              <div className='relative'>
+                <input
+                  type='number'
+                  step='0.1'
+                  value={config.errorRateTarget}
+                  onChange={(e) =>
+                    setConfig({
+                      ...config,
+                      errorRateTarget: Number(e.target.value),
+                    })
+                  }
+                  className='w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-mono text-gray-900'
+                />
+              </div>
+            </div>
+          </div>
+          <div className='flex justify-end gap-3 mt-6'>
+            <button
+              onClick={() => setShowConfig(false)}
+              className='px-5 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-xl transition-colors'
             >
               Cancel
             </button>
             <button
               onClick={handleConfigSave}
-              className='px-4 py-2 text-sm bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg transition-colors'
+              className='px-5 py-2.5 text-sm font-bold bg-gray-900 text-white hover:bg-gray-800 rounded-xl transition-all shadow-lg shadow-gray-900/10'
             >
-              Save
+              Save Configuration
             </button>
           </div>
         </div>
       )}
 
-      {error && (
-        <div className='p-4 bg-destructive/10 text-destructive rounded-lg'>
-          {error}
+      {displayError && (
+        <div className='p-4 bg-red-50 text-red-600 rounded-2xl mb-6 text-sm font-medium border border-red-100 flex items-center gap-3'>
+          {displayError}
         </div>
       )}
 
-      <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
-        <SLACard
-          title='Uptime'
-          value={dashboard?.metrics?.uptime || 0}
-          target={dashboard?.config?.uptimeTarget || 99.9}
-          unit='%'
-        />
-        <SLACard
-          title='Avg Latency'
-          value={dashboard?.metrics?.avgLatency || 0}
-          target={dashboard?.config?.latencyTarget || 500}
-          unit='ms'
-          inverse
-        />
-        <SLACard
-          title='Error Rate'
-          value={dashboard?.metrics?.errorRate || 0}
-          target={dashboard?.config?.errorRateTarget || 1}
-          unit='%'
-          inverse
-        />
-      </div>
+      <div className='space-y-8'>
+        <SLADashboard data={dashboard} />
 
-      <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
-        <div className='bg-card border border-border rounded-xl p-4'>
-          <h3 className='font-semibold mb-4'>SLA Compliance</h3>
-          <div className='h-64 flex items-center justify-center'>
-            <SLAGaugeChart
-              compliance={{ overall: (dashboard?.compliance || 0) >= 100 }}
-            />
+        <div className='bg-white border border-gray-200/60 rounded-[24px] p-6 shadow-sm'>
+          <div className='flex items-center justify-between mb-6'>
+            <h3 className='font-bold text-gray-900 font-dmsans text-lg'>
+              Report History
+            </h3>
+            <button
+              onClick={fetchReports}
+              className='text-sm font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 px-3 py-1.5 rounded-lg transition-colors'
+            >
+              Refresh List
+            </button>
           </div>
-          <div className='text-center mt-2'>
-            <p className='text-sm text-muted-foreground'>
-              {dashboard?.compliance >= 100
-                ? "All SLA targets met"
-                : `${(100 - dashboard?.compliance).toFixed(1)}% below target`}
-            </p>
-          </div>
+          <SLAHistory reports={reports || []} />
         </div>
-
-        <div className='bg-card border border-border rounded-xl p-4'>
-          <h3 className='font-semibold mb-4'>API Performance</h3>
-          <div className='space-y-3 max-h-72 overflow-y-auto'>
-            {dashboard?.apiMetrics?.map((api) => (
-              <div
-                key={api.apiId}
-                className='flex items-center justify-between p-3 bg-muted/50 rounded-lg'
-              >
-                <div>
-                  <p className='font-medium'>{api.name}</p>
-                  <p className='text-xs text-muted-foreground'>
-                    {api.uptime?.toFixed(2)}% uptime · {api.avgLatency}ms
-                  </p>
-                </div>
-                <span
-                  className={`px-2 py-1 text-xs rounded ${
-                    api.meetsSLA
-                      ? "bg-green-500/10 text-green-500"
-                      : "bg-destructive/10 text-destructive"
-                  }`}
-                >
-                  {api.meetsSLA ? "Meeting SLA" : "Below SLA"}
-                </span>
-              </div>
-            )) || (
-              <p className='text-center text-muted-foreground py-4'>
-                No API metrics available
-              </p>
-            )}
-          </div>
-        </div>
-      </div>
-
-      <div className='bg-card border border-border rounded-xl p-4'>
-        <div className='flex items-center justify-between mb-4'>
-          <h3 className='font-semibold'>Report History</h3>
-          <button
-            onClick={fetchReports}
-            className='p-2 hover:bg-muted rounded-lg transition-colors'
-          >
-            <RefreshCw className='h-4 w-4' />
-          </button>
-        </div>
-        <SLAHistory reports={reports || []} />
       </div>
     </div>
   );
