@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Copy, Wand2 } from "lucide-react";
+import { Copy, Wand2, FileJson } from "lucide-react";
 import toast from "react-hot-toast";
 
 const PAYLOAD_TEMPLATES = [
@@ -16,7 +16,7 @@ const PAYLOAD_TEMPLATES = [
     },
   },
   {
-    name: "Latency Alert",
+    name: "Latency",
     payload: {
       event: "api.latency_alert",
       timestamp: "{{timestamp}}",
@@ -46,18 +46,8 @@ const generateRandomId = () =>
   "api_" + Math.random().toString(36).substring(2, 11);
 const generateTimestamp = () => new Date().toISOString();
 
-const PayloadEditor = ({ value, onChange, readOnly }) => {
+const PayloadEditor = ({ value, onChange, readOnly, className }) => {
   const [error, setError] = useState(null);
-
-  const handleChange = (newValue) => {
-    try {
-      JSON.parse(newValue);
-      setError(null);
-    } catch {
-      setError("Invalid JSON");
-    }
-    onChange(newValue);
-  };
 
   const applyTemplate = (template) => {
     const payload = JSON.parse(
@@ -67,6 +57,7 @@ const PayloadEditor = ({ value, onChange, readOnly }) => {
     );
     onChange(JSON.stringify(payload, null, 2));
     setError(null);
+    toast.success(`Applied ${template.name} template`);
   };
 
   const formatJson = () => {
@@ -77,6 +68,7 @@ const PayloadEditor = ({ value, onChange, readOnly }) => {
       toast.success("JSON formatted");
     } catch {
       setError("Cannot format invalid JSON");
+      toast.error("Invalid JSON");
     }
   };
 
@@ -86,53 +78,74 @@ const PayloadEditor = ({ value, onChange, readOnly }) => {
   };
 
   return (
-    <div className='space-y-3'>
+    <div className={`space-y-3 ${className}`}>
       {!readOnly && (
-        <div className='flex items-center gap-2 flex-wrap'>
-          <span className='text-sm text-muted-foreground'>Templates:</span>
-          {PAYLOAD_TEMPLATES.map((template) => (
+        <div className='flex items-center justify-between'>
+          <div className='flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar'>
+            <span className='text-xs font-medium text-gray-500 uppercase tracking-wider shrink-0 mr-1'>
+              Templates:
+            </span>
+            {PAYLOAD_TEMPLATES.map((template) => (
+              <button
+                key={template.name}
+                onClick={() => applyTemplate(template)}
+                className='px-3 py-1.5 text-[11px] font-medium bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full transition-colors whitespace-nowrap'
+              >
+                {template.name}
+              </button>
+            ))}
+          </div>
+
+          <div className='flex items-center gap-1'>
             <button
-              key={template.name}
-              onClick={() => applyTemplate(template)}
-              className='px-2 py-1 text-xs bg-muted hover:bg-muted/80 rounded transition-colors'
+              onClick={formatJson}
+              title='Format JSON'
+              className='p-1.5 text-gray-400 hover:text-[#14412B] hover:bg-[#14412B]/5 rounded-lg transition-colors'
             >
-              {template.name}
+              <Wand2 className='h-4 w-4' />
             </button>
-          ))}
+            <button
+              onClick={copyPayload}
+              title='Copy JSON'
+              className='p-1.5 text-gray-400 hover:text-[#14412B] hover:bg-[#14412B]/5 rounded-lg transition-colors'
+            >
+              <Copy className='h-4 w-4' />
+            </button>
+          </div>
         </div>
       )}
 
-      <div className='relative'>
+      <div className='relative group'>
         <textarea
           value={value}
-          onChange={(e) => handleChange(e.target.value)}
+          onChange={(e) => {
+            onChange(e.target.value);
+            // Basic validation on change if needed, but usually annoying
+            try {
+              JSON.parse(e.target.value);
+              setError(null);
+            } catch {
+              setError("Invalid JSON");
+            }
+          }}
           readOnly={readOnly}
           rows={12}
-          className={`w-full p-3 bg-muted border rounded-lg font-mono text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary/50 ${
-            error ? "border-destructive" : "border-border"
-          } ${readOnly ? "cursor-default" : ""}`}
+          className={`w-full p-4 bg-[#1a1b1e] border rounded-xl font-mono text-[13px] leading-relaxed text-gray-300 resize-none focus:outline-none focus:ring-2 focus:ring-[#14412B]/50 transition-all custom-scrollbar ${
+            error ? "border-red-500/50" : "border-gray-800"
+          } ${readOnly ? "cursor-default opacity-80" : ""}`}
           placeholder='Enter JSON payload...'
+          spellCheck='false'
         />
-        {error && <p className='text-xs text-destructive mt-1'>{error}</p>}
-      </div>
-
-      <div className='flex items-center gap-2'>
-        {!readOnly && (
-          <button
-            onClick={formatJson}
-            className='flex items-center gap-1.5 px-3 py-1.5 text-sm bg-muted hover:bg-muted/80 rounded transition-colors'
-          >
-            <Wand2 className='h-3.5 w-3.5' />
-            Format
-          </button>
-        )}
-        <button
-          onClick={copyPayload}
-          className='flex items-center gap-1.5 px-3 py-1.5 text-sm bg-muted hover:bg-muted/80 rounded transition-colors'
-        >
-          <Copy className='h-3.5 w-3.5' />
-          Copy
-        </button>
+        <div className='absolute top-2 right-3 flex items-center gap-2 pointer-events-none'>
+          {error && (
+            <span className='text-[10px] text-red-400 font-medium bg-red-500/10 px-2 py-0.5 rounded'>
+              {error}
+            </span>
+          )}
+          <span className='text-[10px] uppercase font-bold text-gray-600 tracking-wider'>
+            JSON
+          </span>
+        </div>
       </div>
     </div>
   );

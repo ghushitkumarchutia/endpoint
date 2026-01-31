@@ -114,7 +114,7 @@ const Dashboard = () => {
               value={stats.totalApis}
               icon={Monitor}
               description='Active endpoints'
-              className='px-4 py-4 md:px-6 md:py-6 rounded-[20px] md:rounded-3xl bg-linear-to-br from-[#14412B] to-[#208052] shadow-lg shadow-[#14412B]/20 hover:shadow-[#14412B]/30 text-white h-full'
+              className='px-4 py-4 md:px-6 md:py-6 rounded-[20px] md:rounded-3xl bg-linear-to-br from-[#14412B] to-[#208052] text-white h-full'
               iconClassName='p-2 bg-white/20 rounded-[8px] md:rounded-[10px]'
               titleClassName='text-base md:text-lg font-dmsans text-emerald-100'
               valueClassName='md:text-[34px] text-[24px] font-dmsans text-white'

@@ -1,47 +1,82 @@
-import { GitBranch, Database, Server, Globe } from "lucide-react";
-
-const API_ICONS = {
-  database: Database,
-  server: Server,
-  external: Globe,
-  default: GitBranch,
-};
+import {
+  GitBranch,
+  Database,
+  Server,
+  Globe,
+  Activity,
+  Clock,
+} from "lucide-react";
 
 const ApiNode = ({ data, selected }) => {
-  const IconComponent = API_ICONS[data.type] || API_ICONS.default;
-  const healthColor =
-    data.health === "healthy"
-      ? "bg-green-500"
-      : data.health === "degraded"
-        ? "bg-yellow-500"
-        : "bg-red-500";
+  const getTypeStyles = (type) => {
+    switch (type) {
+      case "database":
+        return { icon: Database, bg: "bg-blue-50", text: "text-blue-600" };
+      case "external":
+        return { icon: Globe, bg: "bg-purple-50", text: "text-purple-600" };
+      case "server":
+        return { icon: Server, bg: "bg-orange-50", text: "text-orange-600" };
+      default:
+        return { icon: GitBranch, bg: "bg-gray-100", text: "text-gray-600" };
+    }
+  };
+
+  const { icon: IconComponent, bg, text } = getTypeStyles(data.type);
+
+  const getHealthColor = (health) => {
+    switch (health) {
+      case "healthy":
+        return "bg-emerald-500 shadow-[0_0_8px_-2px_rgba(16,185,129,0.5)]";
+      case "degraded":
+        return "bg-amber-500 shadow-[0_0_8px_-2px_rgba(245,158,11,0.5)]";
+      case "down":
+        return "bg-red-500 shadow-[0_0_8px_-2px_rgba(239,68,68,0.5)]";
+      default:
+        return "bg-gray-400";
+    }
+  };
 
   return (
     <div
-      className={`px-4 py-3 bg-card border-2 rounded-lg min-w-40 transition-all ${
-        selected ? "border-primary shadow-lg" : "border-border"
-      } ${data.highlighted ? "ring-2 ring-amber-500 ring-offset-2" : ""}`}
+      className={`relative group w-[220px] bg-white rounded-[18px] transition-all duration-300 ${
+        selected
+          ? "ring-2 ring-[#14412B] ring-offset-2 shadow-xl shadow-[#14412B]/10"
+          : "border border-gray-200/60 hover:border-gray-300 hover:shadow-lg hover:shadow-gray-200/50"
+      } ${data.highlighted ? "ring-2 ring-amber-500 ring-offset-2 z-10 scale-105" : ""}`}
     >
-      <div className='flex items-center gap-3'>
-        <div className='p-2 bg-muted rounded-lg'>
-          <IconComponent className='h-4 w-4 text-muted-foreground' />
-        </div>
-        <div className='flex-1 min-w-0'>
-          <div className='flex items-center gap-2'>
-            <span className={`w-2 h-2 rounded-full ${healthColor}`} />
-            <span className='font-medium text-sm truncate'>{data.label}</span>
+      <div className='p-4'>
+        <div className='flex items-start gap-3'>
+          <div className={`p-2.5 rounded-xl shrink-0 ${bg}`}>
+            <IconComponent className={`h-4.5 w-4.5 ${text}`} />
           </div>
-          {data.endpoint && (
-            <p className='text-xs text-muted-foreground truncate mt-0.5'>
-              {data.endpoint}
-            </p>
-          )}
+          <div className='flex-1 min-w-0'>
+            <div className='flex items-center gap-2 mb-0.5'>
+              <h3 className='font-bold text-sm text-gray-900 truncate font-dmsans'>
+                {data.label}
+              </h3>
+              <span
+                className={`w-2 h-2 rounded-full shrink-0 ${getHealthColor(data.health)}`}
+              />
+            </div>
+            {data.endpoint && (
+              <p className='text-[11px] text-gray-500 truncate bg-gray-50 px-1.5 py-0.5 rounded-md inline-block max-w-full font-mono'>
+                {data.endpoint}
+              </p>
+            )}
+          </div>
         </div>
       </div>
+
       {data.metrics && (
-        <div className='flex items-center gap-3 mt-2 pt-2 border-t border-border text-xs text-muted-foreground'>
-          <span>{data.metrics.requests}/min</span>
-          <span>{data.metrics.latency}ms</span>
+        <div className='px-4 py-2 bg-gray-50/50 border-t border-gray-100 rounded-b-[18px] flex items-center justify-between text-[11px] font-medium text-gray-500'>
+          <div className='flex items-center gap-1.5'>
+            <Activity className='h-3 w-3 text-gray-400' />
+            <span>{data.metrics.requests} req/m</span>
+          </div>
+          <div className='flex items-center gap-1.5'>
+            <Clock className='h-3 w-3 text-gray-400' />
+            <span>{data.metrics.latency}ms</span>
+          </div>
         </div>
       )}
     </div>

@@ -27,19 +27,24 @@ const Dependencies = () => {
     await fetchImpactAnalysis(apiId);
   };
 
+  // Suppress "Request cancelled" error
+  const displayError = error === "Request cancelled" ? null : error;
+
   return (
-    <div className='h-[calc(100vh-120px)] flex flex-col'>
-      <div className='flex items-center justify-between mb-4'>
+    <div className='flex flex-col px-4 py-[20px] md:px-6 md:py-[22px] bg-[#f5f5f6] rounded-3xl h-full overflow-hidden'>
+      <div className='flex items-center justify-between mb-6 shrink-0'>
         <div>
-          <h1 className='text-2xl font-bold'>API Dependencies</h1>
-          <p className='text-muted-foreground'>
+          <h1 className='text-2xl font-bold font-dmsans text-gray-900'>
+            API Dependencies
+          </h1>
+          <p className='text-sm text-gray-500 mt-1 font-medium font-bricolage'>
             Visualize relationships and detect cascading failures
           </p>
         </div>
         <div className='flex items-center gap-2'>
           <button
             onClick={fetchGraph}
-            className='flex items-center gap-2 px-3 py-2 bg-muted hover:bg-muted/80 rounded-lg transition-colors'
+            className='flex items-center gap-2 px-4 py-2 bg-white hover:bg-gray-50 text-gray-700 rounded-full border border-gray-200 shadow-sm transition-all text-sm font-medium'
           >
             <RefreshCw className='h-4 w-4' />
             Refresh
@@ -47,13 +52,14 @@ const Dependencies = () => {
         </div>
       </div>
 
-      {error && (
-        <div className='p-4 bg-destructive/10 text-destructive rounded-lg mb-4'>
-          {error}
+      {displayError && (
+        <div className='p-4 bg-red-50 text-red-600 rounded-xl mb-4 text-sm font-medium border border-red-100 flex items-center gap-2 shrink-0'>
+          <Zap className='h-4 w-4 fill-current' />
+          {displayError}
         </div>
       )}
 
-      <div className='flex-1 bg-card border border-border rounded-xl overflow-hidden'>
+      <div className='flex-1 min-h-0 bg-white border border-gray-200/60 rounded-[24px] shadow-sm relative overflow-hidden'>
         {loading ? (
           <div className='h-full flex items-center justify-center'>
             <Loader size='lg' />
@@ -61,25 +67,33 @@ const Dependencies = () => {
         ) : (
           <DependencyGraph graph={graph} onNodeClick={handleNodeClick} />
         )}
+
+        {impactAnalysis && <ImpactHighlight analysis={impactAnalysis} />}
       </div>
 
-      {impactAnalysis && (
-        <div className='mt-4'>
-          <ImpactHighlight analysis={impactAnalysis} />
-        </div>
-      )}
-
-      <div className='mt-4 p-4 bg-muted/50 border border-border rounded-xl'>
+      <div className='mt-4 p-4 bg-[#e8e8ea]/50 rounded-2xl border border-gray-200/60 shrink-0 hidden md:block'>
         <div className='flex items-start gap-3'>
-          <GitBranch className='h-5 w-5 text-primary mt-0.5' />
+          <div className='p-2 bg-white rounded-lg shadow-sm'>
+            <GitBranch className='h-4 w-4 text-[#14412B]' />
+          </div>
           <div>
-            <p className='font-medium text-sm'>How to use:</p>
-            <ul className='text-sm text-muted-foreground mt-1 space-y-1'>
-              <li>• Click on any API node to see its impact analysis</li>
-              <li>• Use scroll to zoom in/out on the graph</li>
-              <li>• Drag nodes to rearrange the layout</li>
-              <li>• Highlighted nodes show cascading failure paths</li>
-            </ul>
+            <p className='font-bold text-sm text-gray-900 font-dmsans'>
+              How to use:
+            </p>
+            <div className='flex items-center gap-6 mt-1.5'>
+              <span className='text-xs text-gray-500 font-medium flex items-center gap-1.5'>
+                <span className='w-1.5 h-1.5 rounded-full bg-gray-400'></span>
+                Click nodes for impact analysis
+              </span>
+              <span className='text-xs text-gray-500 font-medium flex items-center gap-1.5'>
+                <span className='w-1.5 h-1.5 rounded-full bg-gray-400'></span>
+                Scroll to zoom
+              </span>
+              <span className='text-xs text-gray-500 font-medium flex items-center gap-1.5'>
+                <span className='w-1.5 h-1.5 rounded-full bg-gray-400'></span>
+                Drag to rearrange
+              </span>
+            </div>
           </div>
         </div>
       </div>
