@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { logger } = require("../utils/logger");
 
 const connectDB = async () => {
   try {
@@ -13,21 +14,21 @@ const connectDB = async () => {
       retryReads: true,
     });
 
-    console.log(`MongoDB Connected: ${conn.connection.host}`);
+    logger.info(`MongoDB Connected: ${conn.connection.host}`);
 
     mongoose.connection.on("error", (err) => {
-      console.error(`MongoDB connection error: ${err.message}`);
+      logger.error(`MongoDB connection error: ${err.message}`);
     });
 
     mongoose.connection.on("disconnected", () => {
-      console.warn("MongoDB disconnected. Attempting to reconnect...");
+      logger.warn("MongoDB disconnected. Attempting to reconnect...");
     });
 
     mongoose.connection.on("reconnected", () => {
-      console.log("MongoDB reconnected successfully");
+      logger.info("MongoDB reconnected successfully");
     });
   } catch (error) {
-    console.error(`MongoDB Connection Error: ${error.message}`);
+    logger.error(`MongoDB Connection Error: ${error.message}`);
     process.exit(1);
   }
 };
@@ -35,9 +36,9 @@ const connectDB = async () => {
 const closeDB = async () => {
   try {
     await mongoose.connection.close();
-    console.log("MongoDB connection closed gracefully");
+    logger.info("MongoDB connection closed gracefully");
   } catch (error) {
-    console.error(`Error closing MongoDB connection: ${error.message}`);
+    logger.error(`Error closing MongoDB connection: ${error.message}`);
   }
 };
 
