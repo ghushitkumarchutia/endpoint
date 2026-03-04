@@ -391,7 +391,7 @@ const getDashboardStats = async (req, res, next) => {
           }
         }
 
-        const [unreadNotifications, unacknowledgedAnomalies] =
+        const [unreadNotifications, unacknowledgedAnomalies, recentAnomalies] =
           await Promise.all([
             Notification.countDocuments({
               userId: req.user._id,
@@ -401,6 +401,13 @@ const getDashboardStats = async (req, res, next) => {
               apiId: { $in: apiIds },
               acknowledged: false,
             }),
+            Anomaly.find({
+              apiId: { $in: apiIds },
+              acknowledged: false,
+            })
+              .sort({ createdAt: -1 })
+              .limit(2)
+              .lean(),
           ]);
 
         return {
@@ -411,6 +418,7 @@ const getDashboardStats = async (req, res, next) => {
           downCount,
           unreadNotifications,
           unacknowledgedAnomalies,
+          recentAnomalies,
         };
       },
       CACHE_TTL.SHORT,

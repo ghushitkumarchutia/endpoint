@@ -6,14 +6,19 @@ const getNotifications = async (req, res, next) => {
     const page = parseInt(req.query.page) || 1;
     const skip = (page - 1) * limit;
 
-    const notifications = await Notification.find({ userId: req.user._id })
+    const filter = { userId: req.user._id };
+    if (req.query.type) {
+      filter.type = req.query.type;
+    }
+
+    const notifications = await Notification.find(filter)
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
       .populate("anomalyId", "type severity aiInsight")
       .lean();
 
-    const total = await Notification.countDocuments({ userId: req.user._id });
+    const total = await Notification.countDocuments(filter);
     const unreadCount = await Notification.countDocuments({
       userId: req.user._id,
       read: false,
