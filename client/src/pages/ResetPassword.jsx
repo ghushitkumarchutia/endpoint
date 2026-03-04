@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { Lock, EyeOff, Eye, Loader2, ArrowRight } from "lucide-react";
 import authService from "../services/authService";
-import { ROUTES, APP_NAME } from "../utils/constants";
+import { ROUTES } from "../utils/constants";
 import { toast } from "react-hot-toast";
 
 const ResetPassword = () => {
